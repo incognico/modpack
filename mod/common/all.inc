@@ -30,3 +30,6 @@
 #include "vehicles/all.inc"
 #include "weapons/all.inc"
 #undef IMPLEMENTATION
+
+// outcast
+#include "killme/all.inc"

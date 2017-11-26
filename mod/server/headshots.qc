@@ -7,7 +7,7 @@ bool Headshot(entity targ, entity ent, entity weapon_ent, vector hitloc, vector 
 {
 	if(!autocvar_sv_headshot)
 		return false;
-	if(weapon_ent.m_weapon != WEP_RIFLE && weapon_ent.m_weapon != WEP_VAPORIZER && weapon_ent.m_weapon != WEP_VORTEX)
+	if(weapon_ent.m_weapon != WEP_RIFLE && weapon_ent.m_weapon != WEP_VAPORIZER && weapon_ent.m_weapon != WEP_VORTEX && weapon_ent.m_weapon != WEP_HUNTINGRIFLE)
 		return false;
 	if(!IS_PLAYER(targ))
 		return false;

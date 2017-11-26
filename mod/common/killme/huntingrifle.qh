@@ -1,0 +1,132 @@
+#pragma once
+
+// default value for centerprint notification cvars (notification_CENTER_*):
+// 0: off, 1: centerprint
+#define N_DISABL 0
+#define N_ENABLE 1
+
+// default value for info notification cvars (notification_INFO_*):
+// 0: off, 1: display in console, 2: display in chatbox and console
+#define N_DISABLE 0
+#define N_CONSOLE 1
+#define N_CHATCON 2
+
+MSG_INFO_NOTIF(WEAPON_HUNTINGRIFLE_MURDER,                     N_CONSOLE,  3, 2, "spree_inf s1 s2 s3loc spree_end", "s2 s1",       "weaponrifle",              _("^BG%s%s^K1 was tagged with a Hunting Rifle by ^BG%s^K1%s%s"), "")
+MSG_INFO_NOTIF(WEAPON_HUNTINGRIFLE_MURDER_HAIL,                N_CONSOLE,  3, 2, "spree_inf s1 s2 s3loc spree_end", "s2 s1",       "weaponrifle",              _("^BG%s%s^K1 died in ^BG%s^K1's Hunting Rifle bullet hail%s%s"), "")
+MSG_INFO_NOTIF(WEAPON_HUNTINGRIFLE_MURDER_HAIL_PIERCING,       N_CONSOLE,  3, 2, "spree_inf s1 s2 s3loc spree_end", "s2 s1",       "weaponrifle",              _("^BG%s%s^K1 failed to hide from ^BG%s^K1's Hunting Rifle bullet hail%s%s"), "")
+MSG_INFO_NOTIF(WEAPON_HUNTINGRIFLE_MURDER_PIERCING,            N_CONSOLE,  3, 2, "spree_inf s1 s2 s3loc spree_end", "s2 s1",       "weaponrifle",              _("^BG%s%s^K1 failed to hide from ^BG%s^K1's Hunting Rifle%s%s"), "")
+
+MSG_MULTI_NOTIF(WEAPON_HUNTINGRIFLE_MURDER,                N_ENABLE,  NULL,           INFO_WEAPON_HUNTINGRIFLE_MURDER,               NULL)
+MSG_MULTI_NOTIF(WEAPON_HUNTINGRIFLE_MURDER_HAIL,           N_ENABLE,  NULL,           INFO_WEAPON_HUNTINGRIFLE_MURDER_HAIL,          NULL)
+MSG_MULTI_NOTIF(WEAPON_HUNTINGRIFLE_MURDER_HAIL_PIERCING,  N_ENABLE,  NULL,           INFO_WEAPON_HUNTINGRIFLE_MURDER_HAIL_PIERCING, NULL)
+MSG_MULTI_NOTIF(WEAPON_HUNTINGRIFLE_MURDER_PIERCING,       N_ENABLE,  NULL,           INFO_WEAPON_HUNTINGRIFLE_MURDER_PIERCING,      NULL)
+
+#undef N_DISABL
+#undef N_ENABLE
+
+#undef N_DISABLE
+#undef N_CONSOLE
+#undef N_CHATCON
+
+#ifdef GAMEQC
+MODEL(HUNTINGRIFLE_VIEW,                       W_Model("h_huntingrifle.iqm"));
+MODEL(HUNTINGRIFLE_WORLD,                      W_Model("v_huntingrifle.md3"));
+MODEL(HUNTINGRIFLE_ITEM,                       W_Model("g_huntingrifle.md3"));
+
+SOUND(HUNTINGRIFLE_FIRE2, W_Sound("huntingrifle_fire2"));
+SOUND(HUNTINGRIFLE_FIRE, W_Sound("huntingrifle_fire"));
+#endif
+
+CLASS(HuntingRifle, Weapon)
+/* spawnfunc */ ATTRIB(HuntingRifle, m_canonical_spawnfunc, string, "weapon_huntingrifle");
+/* ammotype  */ ATTRIB(HuntingRifle, ammo_type, int, RESOURCE_BULLETS);
+/* impulse   */ ATTRIB(HuntingRifle, impulse, int, 7);
+/* flags     */ ATTRIB(HuntingRifle, spawnflags, int, WEP_FLAG_RELOADABLE | WEP_TYPE_HITSCAN | WEP_FLAG_PENETRATEWALLS);
+/* rating    */ ATTRIB(HuntingRifle, bot_pickupbasevalue, float, 7000);
+/* color     */ ATTRIB(HuntingRifle, wpcolor, vector, '0.5 1 0');
+/* modelname */ ATTRIB(HuntingRifle, mdl, string, "huntingrifle");
+#ifdef GAMEQC
+/* model     */ ATTRIB(HuntingRifle, m_model, Model, MDL_HUNTINGRIFLE_ITEM);
+#endif
+/* crosshair */ ATTRIB(HuntingRifle, w_crosshair, string, "gfx/crosshairrifle");
+/* crosshair */ ATTRIB(HuntingRifle, w_crosshair_size, float, 0.6);
+/* reticle   */ ATTRIB(HuntingRifle, w_reticle, string, "gfx/reticle_nex");
+/* wepimg    */ ATTRIB(HuntingRifle, model2, string, "weaponrifle");
+/* refname   */ ATTRIB(HuntingRifle, netname, string, "huntingrifle");
+/* wepname   */ ATTRIB(HuntingRifle, m_name, string, _("Hunting Rifle"));
+
+AUTOCVAR(g_balance_huntingrifle_bursttime, float, 0, "");
+AUTOCVAR(g_balance_huntingrifle_primary_ammo, float, 10, "");
+AUTOCVAR(g_balance_huntingrifle_primary_animtime, float, 0.4, "");
+AUTOCVAR(g_balance_huntingrifle_primary_bullethail, float, 0, "");
+AUTOCVAR(g_balance_huntingrifle_primary_burstcost, float, 0, "");
+AUTOCVAR(g_balance_huntingrifle_primary_damage, float, 60, "");
+AUTOCVAR(g_balance_huntingrifle_primary_force, float, 55, "");
+AUTOCVAR(g_balance_huntingrifle_primary_refire, float, 1.3, "");
+AUTOCVAR(g_balance_huntingrifle_primary_shots, float, 1, "");
+AUTOCVAR(g_balance_huntingrifle_primary_solidpenetration, float, 256, "");
+AUTOCVAR(g_balance_huntingrifle_primary_spread, float, 0, "");
+AUTOCVAR(g_balance_huntingrifle_primary_tracer, float, 1, "");
+AUTOCVAR(g_balance_huntingrifle_reload_ammo, float, 80, "");
+AUTOCVAR(g_balance_huntingrifle_reload_time, float, 2, "");
+AUTOCVAR(g_balance_huntingrifle_secondary, float, 1, "");
+AUTOCVAR(g_balance_huntingrifle_secondary_ammo, float, 10, "");
+AUTOCVAR(g_balance_huntingrifle_secondary_animtime, float, 0.3, "");
+AUTOCVAR(g_balance_huntingrifle_secondary_bullethail, float, 0, "");
+AUTOCVAR(g_balance_huntingrifle_secondary_burstcost, float, 0, "");
+AUTOCVAR(g_balance_huntingrifle_secondary_damage, float, 20, "");
+AUTOCVAR(g_balance_huntingrifle_secondary_force, float, 50, "");
+AUTOCVAR(g_balance_huntingrifle_secondary_refire, float, 0.4, "");
+AUTOCVAR(g_balance_huntingrifle_secondary_reload, float, 0, "");
+AUTOCVAR(g_balance_huntingrifle_secondary_shots, float, 1, "");
+AUTOCVAR(g_balance_huntingrifle_secondary_solidpenetration, float, 15.5, "");
+AUTOCVAR(g_balance_huntingrifle_secondary_spread, float, 0, "");
+AUTOCVAR(g_balance_huntingrifle_secondary_tracer, float, 0, "");
+AUTOCVAR(g_balance_huntingrifle_switchdelay_drop, float, 0.2, "");
+AUTOCVAR(g_balance_huntingrifle_switchdelay_raise, float, 0.2, "");
+AUTOCVAR(g_balance_huntingrifle_tag_time, float, 4, "");
+AUTOCVAR(g_balance_huntingrifle_weaponreplace, string, "", "");
+AUTOCVAR(g_balance_huntingrifle_weaponstart, float, 0, "");
+AUTOCVAR(g_balance_huntingrifle_weaponstartoverride, float, -1, "");
+AUTOCVAR(g_balance_huntingrifle_weaponthrowable, float, 1, "");
+
+#define X(BEGIN, P, END, class, prefix) \
+	BEGIN(class) \
+		P(class, prefix, ammo, float, BOTH) \
+		P(class, prefix, animtime, float, BOTH) \
+		P(class, prefix, bullethail, float, BOTH) \
+		P(class, prefix, burstcost, float, BOTH) \
+		P(class, prefix, bursttime, float, NONE) \
+		P(class, prefix, damage, float, BOTH) \
+		P(class, prefix, force, float, BOTH) \
+		P(class, prefix, refire, float, BOTH) \
+		P(class, prefix, reload, float, SEC) \
+		P(class, prefix, reload_ammo, float, NONE) \
+    	P(class, prefix, reload_time, float, NONE) \
+		P(class, prefix, secondary, float, NONE) \
+		P(class, prefix, shots, float, BOTH) \
+		P(class, prefix, solidpenetration, float, BOTH) \
+		P(class, prefix, spread, float, BOTH) \
+    	P(class, prefix, switchdelay_drop, float, NONE) \
+    	P(class, prefix, switchdelay_raise, float, NONE) \
+		P(class, prefix, tag_time, float, NONE) \
+		P(class, prefix, tracer, float, BOTH) \
+    	P(class, prefix, weaponreplace, string, NONE) \
+    	P(class, prefix, weaponstartoverride, float, NONE) \
+    	P(class, prefix, weaponstart, float, NONE) \
+    	P(class, prefix, weaponthrowable, float, NONE) \
+	END()
+    W_MOD_PROPS(X, HuntingRifle, huntingrifle)
+#undef X
+ENDCLASS(HuntingRifle)
+REGISTER_WEAPON(HUNTINGRIFLE, huntingrifle, NEW(HuntingRifle));
+
+SPAWNFUNC_WEAPON(weapon_huntingrifle, WEP_HUNTINGRIFLE)
+
+#ifdef SVQC
+.float huntingrifle_accumulator;
+.float huntingrifle_tagged;
+
+IntrusiveList g_huntingrifle_tagged;
+STATIC_INIT(g_huntingrifle_tagged) { g_huntingrifle_tagged = IL_NEW(); }
+#endif
