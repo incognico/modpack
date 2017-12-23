@@ -1,0 +1,8 @@
+#pragma once
+
+MODEL(ASSAULTRIFLE_MUZZLEFLASH,           "models/flash.md3");
+MODEL(ASSAULTRIFLE_VIEW,                  W_Model("h_g3.iqm"));
+MODEL(ASSAULTRIFLE_WORLD,                 W_Model("v_g3.md3"));
+MODEL(ASSAULTRIFLE_ITEM,                  W_Model("g_g3.md3"));
+
+SOUND(ASSAULTRIFLE_FIRE, W_Sound("assaultrifle_fire"));
