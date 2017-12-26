@@ -194,10 +194,11 @@ REGISTER_MUTATOR(hrifletag, true);
 
 MUTATOR_HOOKFUNCTION(hrifletag, FireBullet_Hit)
 {
+    entity attacker = M_ARGV(0, entity);
     entity targ = M_ARGV(1, entity);
     entity wep_ent = M_ARGV(5, entity);
 
-	if(IS_DEAD(targ) || wep_ent.m_weapon != WEP_HUNTINGRIFLE || STAT(FROZEN, targ) || !targ.takedamage)
+	if(IS_DEAD(targ) || wep_ent.m_weapon != WEP_HUNTINGRIFLE || STAT(FROZEN, targ) || !targ.takedamage || attacker.vehicle)
 		return;
 
 	if(!targ.huntingrifle_tagged)
