@@ -41,7 +41,7 @@ CLASS(HuntingRifle, Weapon)
 /* spawnfunc */ ATTRIB(HuntingRifle, m_canonical_spawnfunc, string, "weapon_huntingrifle");
 /* ammotype  */ ATTRIB(HuntingRifle, ammo_type, int, RESOURCE_BULLETS);
 /* impulse   */ ATTRIB(HuntingRifle, impulse, int, 7);
-/* flags     */ ATTRIB(HuntingRifle, spawnflags, int, WEP_FLAG_RELOADABLE | WEP_TYPE_HITSCAN | WEP_FLAG_PENETRATEWALLS);
+/* flags     */ ATTRIB(HuntingRifle, spawnflags, int, WEP_FLAG_RELOADABLE | WEP_TYPE_HITSCAN | WEP_FLAG_PENETRATEWALLS | WEP_FLAG_NODUAL);
 /* rating    */ ATTRIB(HuntingRifle, bot_pickupbasevalue, float, 7000);
 /* color     */ ATTRIB(HuntingRifle, wpcolor, vector, '0.5 1 0');
 /* modelname */ ATTRIB(HuntingRifle, mdl, string, "huntingrifle");
