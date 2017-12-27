@@ -4,6 +4,7 @@ AUTOCVAR(g_random_weapons_keepspawns, bool, true, "Keep the regular weapon spawn
 AUTOCVAR(g_random_weapons_count, int, 20, "Number of weapons to place around the map");
 AUTOCVAR(g_random_weapons_tries, int, 20, "Try to place a weapon this many times before giving up");
 AUTOCVAR(g_random_weapons_delay, float, 5, "Timer between spawning new weapons when init mode is off");
+AUTOCVAR(g_random_weapons_droptofloor, bool, false, "Drop the weapons instantly so they don't appear to fall from the sky");
 AUTOCVAR(g_random_weapons_lifetime, float, 15, "Lifespan of the spawned weapons when init mode is off");
 AUTOCVAR(g_random_weapons_include_special, bool, true, "Include mutator blocked and hidden weapons");
 AUTOCVAR(g_random_weapons_allow_weaponreplace, bool, false, "Allow weaponreplace settings to override the spawned weapons");
@@ -94,6 +95,8 @@ void random_weapons_SpawnWeapons(int wcount, bool is_loot)
 			}
 			else
 				chosen.rweps_seen = true; // don't bother, they'll despawn anyway
+			if(autocvar_g_random_weapons_droptofloor)
+				droptofloor(e);
 			e.angles = '0 0 0';
 			e.gravity = 1;
 			e.rweps_item = true;
