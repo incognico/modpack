@@ -21,6 +21,8 @@ const int MODELS_RENAMON = BIT(6);
 const int MODELS_BOT = BIT(7);
 const int MODELS_MARIO = BIT(8);
 const int MODELS_BEAR = BIT(9);
+const int MODELS_MONK = BIT(10);
+const int MODELS_NEXUS = BIT(11);
 #endif
 
 #ifdef SVQC
@@ -62,6 +64,8 @@ void cpmodels_Precache()
 		CHECK_MODEL("rosalina.dpm", ROSALINA)
 		CHECK_MODEL("mario.dpm", MARIO)
 		CHECK_MODEL("bear.dpm", BEAR)
+		CHECK_MODEL("monk2.dpm", MONK)
+		CHECK_MODEL("nexus.zym", NEXUS)
 	}
 #undef CHECK_MODEL
 }
@@ -84,6 +88,8 @@ void cpmodels_Precache()
 .bool cvar_cl_goat;
 .bool cvar_cl_damnfurries;
 .bool cvar_cl_brothersbear;
+.bool cvar_cl_monk;
+.bool cvar_cl_nexus;
 .bool cow;
 
 REPLICATE(cvar_cl_pony, bool, "cl_pony");
@@ -94,6 +100,8 @@ REPLICATE(cvar_cl_sparkle, int, "cl_sparkle");
 REPLICATE(cvar_cl_goat, bool, "cl_goat");
 REPLICATE(cvar_cl_damnfurries, bool, "cl_damnfurries");
 REPLICATE(cvar_cl_brothersbear, bool, "cl_brothersbear");
+REPLICATE(cvar_cl_monk, bool, "cl_monk");
+REPLICATE(cvar_cl_nexus, bool, "cl_nexus");
 
 MUTATOR_HOOKFUNCTION(cpmodels, FormatMessage)
 {
@@ -125,6 +133,12 @@ MUTATOR_HOOKFUNCTION(cpmodels, FixPlayermodel)
 			ret_string = "models/player/terminusmale.iqm";
 		if(CS(player).cvar_cl_goat && ALLOWED(GOAT))
 			ret_string = "models/player/draconimale.iqm";
+
+		if(CS(player).cvar_cl_monk && ALLOWED(MONK))
+			ret_string = "models/player/monk2.dpm";
+
+		if(CS(player).cvar_cl_nexus && ALLOWED(NEXUS))
+			ret_string = "models/player/nexus.zym";
 
 		if(ALLOWED(BOT) && IS_BOT_CLIENT(player) && autocvar_sv_allow_customplayermodels_bots)
 			ret_string = "models/player/ubot.iqm";
