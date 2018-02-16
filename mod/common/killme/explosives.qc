@@ -88,7 +88,7 @@ void W_Explosives_Attack_Load_Release(entity actor, .entity weaponentity)
 	entity dmgent = spawn();
 	dmgent.owner = dmgent.realowner = actor;
 	setorigin(dmgent, actor.origin);
-	RadiusDamage (dmgent, actor, WEP_CVAR(explosives, damage), WEP_CVAR(explosives, edgedamage), WEP_CVAR(explosives, radius), NULL, NULL, WEP_CVAR(explosives, force), WEP_EXPLOSIVES.m_id, actor);
+	RadiusDamage (dmgent, actor, WEP_CVAR(explosives, damage), WEP_CVAR(explosives, edgedamage), WEP_CVAR(explosives, radius), NULL, NULL, WEP_CVAR(explosives, force), WEP_EXPLOSIVES.m_id, weaponentity, actor);
 	delete(dmgent);
 
 	weapon_thinkf(actor, weaponentity, WFRAME_FIRE2, WEP_CVAR(explosives, load_animtime), w_ready);

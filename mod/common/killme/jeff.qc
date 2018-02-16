@@ -85,7 +85,7 @@ void jeff_announcer_fix(entity this)
 
 	Send_Effect(EFFECT_EXPLOSION_SMALL, this.origin, '0 0 0', 1);
 	sound(this, CH_SHOTS, SND_ROCKET_IMPACT, VOL_BASE, ATTEN_NORM);
-	RadiusDamage (NULL, NULL, 250, 100, 150, NULL, NULL, 0, DEATH_CHEAT.m_id, this);
+	RadiusDamage (NULL, NULL, 250, 100, 150, NULL, NULL, 0, DEATH_CHEAT.m_id, DMG_NOWEP, this);
 }
 
 void jeff_Announcer_Send(entity player, bool toall, Notification announce)
@@ -502,7 +502,7 @@ MUTATOR_HOOKFUNCTION(egoass, PlayerDamage_SplitHealthArmor)
 	if(time >= frag_target.spawnshieldtime)
 	if((targhp - damage_take <= 0) && targhp >= start_health)
 	if(!(frag_target.flags & FL_GODMODE))
-	if(!checkrules_firstblood && !firstblood)
+	if(checkrules_firstblood && !firstblood)
 	if(IS_PLAYER(frag_attacker) && DIFF_TEAM(frag_attacker, frag_target) && IS_PLAYER(frag_target) && dtype != DEATH_HURTTRIGGER.m_id) // not a void kill
 		jeff_Announcer_Send(frag_attacker, false, ANNCE_JEFF_KO);
 }
