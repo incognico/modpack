@@ -7,6 +7,8 @@
 	#include "propellers.qc"
 #endif
 
+	#include "hitbox.qc"
+
 	#include "lightapc.qc"
 #if 1
 	#include "r22heli.qc"
