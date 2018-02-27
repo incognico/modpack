@@ -625,16 +625,16 @@ MUTATOR_HOOKFUNCTION(egoass, BuffTouch)
 	entity buff = M_ARGV(0, entity);
 	entity toucher = M_ARGV(1, entity);
 
-	if(buff.buffs & BUFF_INVISIBLE.m_itemid)
+	if(STAT(BUFFS, buff) & BUFF_INVISIBLE.m_itemid)
 		jeff_Announcer_Send(toucher, true, ANNCE_JEFF_CAMOUFLAGED);
 
-	if(buff.buffs & BUFF_VAMPIRE.m_itemid)
+	if(STAT(BUFFS, buff) & BUFF_VAMPIRE.m_itemid)
 		jeff_Announcer_Send(toucher, true, ANNCE_JEFF_VAMPIRE);
 
-	if(buff.buffs & BUFF_BASH.m_itemid)
+	if(STAT(BUFFS, buff) & BUFF_BASH.m_itemid)
 		jeff_Announcer_Send(toucher, true, ANNCE_JEFF_BOOSTER);
 
-	if(buff.buffs & BUFF_SPEED.m_itemid)
+	if(STAT(BUFFS, buff) & BUFF_SPEED.m_itemid)
 		jeff_Announcer_Send(toucher, true, ANNCE_JEFF_SPEED);
 }
 

@@ -80,7 +80,7 @@ void W_Explosives_Attack_Load_Release(entity actor, .entity weaponentity)
 	if(!actor.(weaponentity).explosives_load)
 		return;
 
-	W_SetupShot(actor, weaponentity, false, 2, SND_ROCKET_IMPACT, CH_WEAPON_A, WEP_CVAR(explosives, damage));
+	W_SetupShot(actor, weaponentity, false, 2, SND_ROCKET_IMPACT, CH_WEAPON_A, WEP_CVAR(explosives, damage), WEP_EXPLOSIVES.m_id);
 
 	if(actor.weapons & WEPSET(EXPLOSIVES))
 		actor.weapons &= ~WEPSET(EXPLOSIVES); // take it away before doing the damage?

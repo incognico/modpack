@@ -186,7 +186,7 @@ void assaultrifle_muzzleflash_send(entity actor, entity wepent)
 
 void W_AssaultRifle_Attack(Weapon thiswep, int deathtype, entity actor, .entity weaponentity)
 {
-	W_SetupShot(actor, weaponentity, true, 0, SND_ASSAULTRIFLE_FIRE, CH_WEAPON_A, ((actor.(weaponentity).misc_bulletcounter == 1) ? WEP_CVAR(assaultrifle, first_damage) : WEP_CVAR(assaultrifle, sustained_damage)));
+	W_SetupShot(actor, weaponentity, true, 0, SND_ASSAULTRIFLE_FIRE, CH_WEAPON_A, ((actor.(weaponentity).misc_bulletcounter == 1) ? WEP_CVAR(assaultrifle, first_damage) : WEP_CVAR(assaultrifle, sustained_damage)), deathtype);
 	if(!autocvar_g_norecoil)
 	{
 		actor.punchangle_x = random() - 0.5;
@@ -271,7 +271,7 @@ void W_AssaultRifle_Attack_Auto(Weapon thiswep, entity actor, .entity weaponenti
 
 	W_DecreaseAmmo(WEP_ASSAULTRIFLE, actor, WEP_CVAR(assaultrifle, sustained_ammo), weaponentity);
 
-	W_SetupShot(actor, weaponentity, true, 0, SND_ASSAULTRIFLE_FIRE, CH_WEAPON_A, WEP_CVAR(assaultrifle, sustained_damage));
+	W_SetupShot(actor, weaponentity, true, 0, SND_ASSAULTRIFLE_FIRE, CH_WEAPON_A, WEP_CVAR(assaultrifle, sustained_damage), WEP_ASSAULTRIFLE.m_id);
 	if(!autocvar_g_norecoil)
 	{
 		actor.punchangle_x = random() - 0.5;
@@ -307,7 +307,7 @@ void W_AssaultRifle_Attack_Auto(Weapon thiswep, entity actor, .entity weaponenti
 
 void W_AssaultRifle_Attack_Burst(Weapon thiswep, entity actor, .entity weaponentity, int fire)
 {
-	W_SetupShot(actor, weaponentity, true, 0, SND_ASSAULTRIFLE_FIRE, CH_WEAPON_A, WEP_CVAR(assaultrifle, sustained_damage));
+	W_SetupShot(actor, weaponentity, true, 0, SND_ASSAULTRIFLE_FIRE, CH_WEAPON_A, WEP_CVAR(assaultrifle, sustained_damage), WEP_ASSAULTRIFLE.m_id);
 	if(!autocvar_g_norecoil)
 	{
 		actor.punchangle_x = random() - 0.5;

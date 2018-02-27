@@ -5,7 +5,7 @@ void W_HuntingRifle_FireBullet(Weapon thiswep, .entity weaponentity, float pSpre
 {
 	W_DecreaseAmmo(thiswep, actor, pAmmo, weaponentity);
 
-	W_SetupShot(actor, weaponentity, true, 2, pSound, CH_WEAPON_A, pDamage * pShots);
+	W_SetupShot(actor, weaponentity, true, 2, pSound, CH_WEAPON_A, pDamage * pShots, deathtype);
 
 	Send_Effect(EFFECT_RIFLE_MUZZLEFLASH, w_shotorg, w_shotdir * 2000, 1);
 
