@@ -85,7 +85,7 @@ void jeff_announcer_fix(entity this)
 
 	Send_Effect(EFFECT_EXPLOSION_SMALL, this.origin, '0 0 0', 1);
 	sound(this, CH_SHOTS, SND_ROCKET_IMPACT, VOL_BASE, ATTEN_NORM);
-	RadiusDamage (NULL, NULL, 250, 100, 150, NULL, NULL, 0, DEATH_CHEAT.m_id, DMG_NOWEP, this);
+	Damage(this, NULL, NULL, 250, DEATH_CHEAT.m_id, DMG_NOWEP, this.origin, '0 0 0');
 }
 
 void jeff_Announcer_Send(entity player, bool toall, Notification announce)
