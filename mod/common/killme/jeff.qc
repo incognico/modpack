@@ -78,28 +78,11 @@ float autocvar_jeff_headshot_damage = 1.6;
 
 bool Fire_IsBurning(entity e); // defined later
 
-void jeff_announcer_fix(entity this)
-{
-	if(this.vehicle || STAT(FROZEN, this) || IS_DEAD(this))
-		return;
-
-	Send_Effect(EFFECT_EXPLOSION_SMALL, this.origin, '0 0 0', 1);
-	sound(this, CH_SHOTS, SND_ROCKET_IMPACT, VOL_BASE, ATTEN_NORM);
-	Damage(this, NULL, NULL, 250, DEATH_CHEAT.m_id, DMG_NOWEP, this.origin, '0 0 0');
-}
-
 void jeff_Announcer_Send(entity player, bool toall, Notification announce)
 {
 	if(player == NULL || !IS_PLAYER(player)) { return; }
 
 	player.hah_count += 1;
-
-	if(player.hah_count == 15)
-	{
-		defer(player, 0.1, jeff_announcer_fix);
-		player.hah_count = 0;
-		return;
-	}
 
 	if(player.last_announcer > time) { return; }
 
