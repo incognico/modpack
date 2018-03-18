@@ -90,6 +90,8 @@ void crate_dropweapon(entity e, vector org)
 	RandomSelection_Init();
 	FOREACH(Weapons, it != WEP_Null && (!(it.spawnflags & WEP_FLAG_MUTATORBLOCKED) || autocvar_g_random_crates_loot_include_special),
 	{
+		if(it == WEP_TUBA)
+			continue; // blacklisted weapon for some reason
 		if((it.spawnflags & WEP_FLAG_HIDDEN) && (it.spawnflags & WEP_FLAG_MUTATORBLOCKED))
 			continue; // never ever do the attacks
 		if(it.spawnflags & WEP_FLAG_SUPERWEAPON)
