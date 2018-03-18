@@ -52,6 +52,7 @@ string crate_item_getmessage(int id)
 
 AUTOCVAR(g_random_crates_loot_magnet_range, float, 100, "Pickup range of the magnet item");
 AUTOCVAR(g_random_crates_loot_drink_dontsue, bool, false, "Please");
+AUTOCVAR(g_random_crates_loot_drink_sue_chance, float, 0.1, "Hehehe");
 AUTOCVAR(g_random_crates_loot_speed_speed, float, 2, "Movement speed while holding speed item");
 AUTOCVAR(g_random_crates_loot_speed_weaponspeed, float, 2, "Weapon action speed");
 AUTOCVAR(g_random_crates_loot_speed_rate, float, 0.5, "Weapon attack rate speed (lower is faster)");
@@ -93,8 +94,8 @@ MUTATOR_HOOKFUNCTION(crate_items, PlayerPreThink)
 		if(time >= player.bloodloss_timer) // we can safely reuse the field, if bloodloss is in effect they don't need to stack!
 		{
 			if(player.event_damage)
-				player.event_damage(player, player, player, 1, DEATH_ROT.m_id, DMG_NOWEP, player.origin, '0 0 0');
-			player.bloodloss_timer = time + 0.5 + random() * 0.5;
+				player.event_damage(player, player, player, 5, DEATH_ROT.m_id, DMG_NOWEP, player.origin, '0 0 0');
+			player.bloodloss_timer = time + 0.5 + random() * 3;
 		}
 	}
 
@@ -186,7 +187,7 @@ int crate_item_handletouch(entity this, entity toucher)
 		case CRATE_LOOT_DRINK:
 		{
 			// hehe
-			if(!autocvar_g_random_crates_loot_drink_dontsue)
+			if(!autocvar_g_random_crates_loot_drink_dontsue && random() < autocvar_g_random_crates_loot_drink_sue_chance)
 			{
 				MorningRescue(toucher);
 				toucher.rcrates_item &= ~BIT(CRATE_LOOT_SKULL);

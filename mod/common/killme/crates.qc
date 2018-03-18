@@ -8,6 +8,7 @@ AUTOCVAR(g_random_crates_droptofloor, bool, true, "Drop the crates instantly so 
 AUTOCVAR(g_random_crates_loot_count_min, int, 2, "Minimum number of items each crate can drop");
 AUTOCVAR(g_random_crates_loot_count_max, int, 5, "Maximum number of items each crate can drop");
 AUTOCVAR(g_random_crates_loot_lifetime, float, 5, "Lifespan of the spawned items");
+AUTOCVAR(g_random_crates_loot_tuba_chance, float, 0.1, "Chance for tuba to spawn as opposed to most weapons");
 AUTOCVAR(g_random_crates_loot_weapon_chance, float, 0.1, "Chance for a weapon to spawn from the crate");
 AUTOCVAR(g_random_crates_loot_health_chance, float, 0.25, "Chance for a health or armor item to spawn from the crate");
 AUTOCVAR(g_random_crates_loot_include_special, bool, true, "Include mutator blocked weapons");
@@ -90,14 +91,12 @@ void crate_dropweapon(entity e, vector org)
 	RandomSelection_Init();
 	FOREACH(Weapons, it != WEP_Null && (!(it.spawnflags & WEP_FLAG_MUTATORBLOCKED) || autocvar_g_random_crates_loot_include_special),
 	{
-		if(it == WEP_TUBA)
-			continue; // blacklisted weapon for some reason
 		if((it.spawnflags & WEP_FLAG_HIDDEN) && (it.spawnflags & WEP_FLAG_MUTATORBLOCKED))
 			continue; // never ever do the attacks
 		if(it.spawnflags & WEP_FLAG_SUPERWEAPON)
 			continue; // no power weapons thank you very much
 		if(W_IsWeaponThrowable(e, it.m_id))
-			RandomSelection_AddEnt(it, 1, 1);
+			RandomSelection_AddEnt(it, ((it == WEP_TUBA) ? autocvar_g_random_crates_loot_tuba_chance : 1), 1);
 	});
 
 	random_crates_SpawnWeapon(e, RandomSelection_chosen_ent, org);
