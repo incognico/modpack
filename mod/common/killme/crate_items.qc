@@ -57,7 +57,7 @@ AUTOCVAR(g_random_crates_loot_speed_speed, float, 2, "Movement speed while holdi
 AUTOCVAR(g_random_crates_loot_speed_weaponspeed, float, 2, "Weapon action speed");
 AUTOCVAR(g_random_crates_loot_speed_rate, float, 0.5, "Weapon attack rate speed (lower is faster)");
 AUTOCVAR(g_random_crates_loot_skull_time, float, 10, "Rough time between pain");
-AUTOCVAR(g_random_crates_loot_skull_damage, float, 50, "Pain");
+AUTOCVAR(g_random_crates_loot_skull_damage, float, 20, "Pain");
 
 
 REGISTER_MUTATOR(crate_items, true); // always enabled!

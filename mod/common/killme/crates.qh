@@ -6,7 +6,7 @@
 
 EFFECT(0, CRATE_BREAK,            "impact_wood")
 
-MODEL(CRATE, "models/crate.md3");
+MODEL(CRATE, "models/lootcrate.md3");
 
 SOUND(CRATE_BREAK1, "object/impact_wood_1");
 SOUND(CRATE_BREAK2, "object/impact_wood_2");

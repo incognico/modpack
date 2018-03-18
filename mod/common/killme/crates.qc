@@ -4,6 +4,7 @@ AUTOCVAR(g_random_crates, bool, false, "Enable randomly placed crates mutator");
 AUTOCVAR(g_random_crates_count, int, 5, "Number of crates to place around the map");
 AUTOCVAR(g_random_crates_tries, int, 20, "Try to place a crate this many times before giving up");
 AUTOCVAR(g_random_crates_delay, float, 20, "Timer between spawning new crates");
+AUTOCVAR(g_random_crates_scale, float, 1.4, "Size of the crates (doesn't affect hitbox)");
 AUTOCVAR(g_random_crates_droptofloor, bool, true, "Drop the crates instantly so they don't appear to fall from the sky");
 AUTOCVAR(g_random_crates_loot_count_min, int, 2, "Minimum number of items each crate can drop");
 AUTOCVAR(g_random_crates_loot_count_max, int, 5, "Maximum number of items each crate can drop");
@@ -82,7 +83,7 @@ void random_crates_SpawnWeapon(entity ent, entity wep, vector org)
 
 void crate_think(entity this)
 {
-	this.nextthink = time + 0.25; // don't need to update often, very unlikely for these to move
+	this.nextthink = time + 0.15; // don't need to update often, very unlikely for these to move
 	CSQCMODEL_AUTOUPDATE(this);
 }
 
@@ -239,7 +240,7 @@ void crate_setup(entity crate)
 		IL_PUSH(g_bot_targets, crate);
 	crate.bot_attack = true;
 
-	crate.scale = 12; // fix a model issue
+	crate.scale = autocvar_g_random_crates_scale;
 	crate.angles_y = floor(random() * 180);
 	crate.takedamage = DAMAGE_AIM;
 	crate.health = 50;
