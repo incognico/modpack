@@ -56,6 +56,8 @@ AUTOCVAR(g_random_crates_loot_drink_sue_chance, float, 0.1, "Hehehe");
 AUTOCVAR(g_random_crates_loot_speed_speed, float, 2, "Movement speed while holding speed item");
 AUTOCVAR(g_random_crates_loot_speed_weaponspeed, float, 2, "Weapon action speed");
 AUTOCVAR(g_random_crates_loot_speed_rate, float, 0.5, "Weapon attack rate speed (lower is faster)");
+AUTOCVAR(g_random_crates_loot_skull_time, float, 10, "Rough time between pain");
+AUTOCVAR(g_random_crates_loot_skull_damage, float, 50, "Pain");
 
 
 REGISTER_MUTATOR(crate_items, true); // always enabled!
@@ -94,8 +96,8 @@ MUTATOR_HOOKFUNCTION(crate_items, PlayerPreThink)
 		if(time >= player.bloodloss_timer) // we can safely reuse the field, if bloodloss is in effect they don't need to stack!
 		{
 			if(player.event_damage)
-				player.event_damage(player, player, player, 5, DEATH_ROT.m_id, DMG_NOWEP, player.origin, '0 0 0');
-			player.bloodloss_timer = time + 0.5 + random() * 3;
+				player.event_damage(player, player, player, autocvar_g_random_crates_loot_skull_damage, DEATH_ROT.m_id, DMG_NOWEP, player.origin, '0 0 0');
+			player.bloodloss_timer = time + 5 + random() * autocvar_g_random_crates_loot_skull_time;
 		}
 	}
 
