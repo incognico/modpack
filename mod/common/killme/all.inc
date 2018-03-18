@@ -1,7 +1,9 @@
 #include "jeff.qc"
 
+#include "crates.qh"
 #ifdef SVQC
 	#include "randomweapons.qc"
+	#include "crates.qc"
 #endif
 
 #include "huntingrifle.qc"

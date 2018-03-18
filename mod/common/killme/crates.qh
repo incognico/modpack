@@ -1,0 +1,23 @@
+#pragma once
+
+#ifdef SVQC
+.bool rcrates_item;
+#endif
+
+EFFECT(0, CRATE_BREAK,            "impact_wood")
+
+MODEL(CRATE, "models/crate.md3");
+
+SOUND(CRATE_BREAK1, "object/impact_wood_1");
+SOUND(CRATE_BREAK2, "object/impact_wood_2");
+SOUND(CRATE_BREAK3, "object/impact_wood_3");
+SOUND(CRATE_BREAK4, "object/impact_wood_4");
+SOUND(CRATE_BREAK5, "object/impact_wood_5");
+Sound SND_CRATE_BREAK_RANDOM() {
+    return Sounds_from(SND_CRATE_BREAK1.m_id + floor(prandom() * 5));
+}
+
+#ifdef SVQC
+IntrusiveList g_crates;
+STATIC_INIT(g_crates) { g_crates = IL_NEW(); }
+#endif
