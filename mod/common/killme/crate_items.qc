@@ -12,6 +12,7 @@ enum
 	CRATE_LOOT_GASMASK,
 	CRATE_LOOT_SCUBAGEAR,
 	CRATE_LOOT_SHIELD,
+	CRATE_LOOT_ARSENAL,
 	CRATE_LOOT_LAST
 };
 
@@ -25,6 +26,7 @@ MODEL(CRATE_LOOT_SKULL, "models/crate_items/skull.iqm");
 MODEL(CRATE_LOOT_GASMASK, "models/crate_items/gasmask.iqm");
 MODEL(CRATE_LOOT_SCUBAGEAR, "models/crate_items/scubagear.iqm");
 MODEL(CRATE_LOOT_SHIELD, "models/crate_items/shield.iqm");
+MODEL(CRATE_LOOT_ARSENAL, "models/crate_items/arsenal.iqm");
 Model MDL_CRATE_LOOT(int id) {
     return Models_from(MDL_CRATE_LOOT_POTION.m_id + id);
 }
@@ -43,6 +45,7 @@ string crate_item_getmessage(int id)
 		case CRATE_LOOT_GASMASK: return "You can swim in slime!";
 		case CRATE_LOOT_SCUBAGEAR: return "No more drowning!";
 		case CRATE_LOOT_SHIELD: return "Paladin's shield grants you armor!";
+		case CRATE_LOOT_ARSENAL: return "Double vortex? Why not!";
 	}
 
 	return "You got nothing, sucker!";
@@ -154,6 +157,21 @@ MUTATOR_HOOKFUNCTION(crate_items, Damage_Calculate)
 
 	if((frag_target.rcrates_item & BIT(CRATE_LOOT_SHIELD)) && IS_PLAYER(frag_target) && frag_target != frag_attacker && frag_attacker && M_ARGV(4, float) > 0)
 		SetResourceAmount(frag_target, RESOURCE_ARMOR, GetResourceAmount(frag_target, RESOURCE_ARMOR) + M_ARGV(4, float));
+}
+
+MUTATOR_HOOKFUNCTION(crate_items, ItemTouch)
+{
+	// duplicate of the akimbo function, even allows this outside of akimbo!
+	if(g_nexball || autocvar_g_weaponswitch_debug != 2)
+		return false; // at least try to remain compatible
+	if(MUTATOR_RETURNVALUE == MUT_ITEMTOUCH_RETURN)
+		return false; // already handled, probably didn't pick it up
+
+	entity item = M_ARGV(0, entity);
+	entity player = M_ARGV(1, entity);
+
+	if(Item_IsLoot(item) && item.weapon && (player.weapons & item.itemdef.m_weapon.m_wepset) && item.owner != player)
+		PS(player).dual_weapons |= item.itemdef.m_weapon.m_wepset; // dual it up!
 }
 
 bool crate_item_ammo_set(entity player, int resource)
