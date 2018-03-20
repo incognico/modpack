@@ -170,7 +170,7 @@ MUTATOR_HOOKFUNCTION(crate_items, ItemTouch)
 	entity item = M_ARGV(0, entity);
 	entity player = M_ARGV(1, entity);
 
-	if(Item_IsLoot(item) && item.weapon && (player.weapons & item.itemdef.m_weapon.m_wepset) && item.owner != player)
+	if(Item_IsLoot(item) && item.weapon && (player.weapons & item.itemdef.m_weapon.m_wepset) && item.owner != player && (player.rcrates_item & BIT(CRATE_LOOT_ARSENAL)))
 		PS(player).dual_weapons |= item.itemdef.m_weapon.m_wepset; // dual it up!
 }
 
