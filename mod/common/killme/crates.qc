@@ -12,6 +12,7 @@ AUTOCVAR(g_random_crates_loot_lifetime, float, 5, "Lifespan of the spawned items
 AUTOCVAR(g_random_crates_loot_tuba_chance, float, 0.1, "Chance for tuba to spawn as opposed to most weapons");
 AUTOCVAR(g_random_crates_loot_weapon_chance, float, 0.1, "Chance for a weapon to spawn from the crate");
 AUTOCVAR(g_random_crates_loot_health_chance, float, 0.25, "Chance for a health or armor item to spawn from the crate");
+AUTOCVAR(g_random_crates_loot_powerup_chance, float, 0.075, "Chance for a powerup to spawn from the crate");
 AUTOCVAR(g_random_crates_loot_include_special, bool, true, "Include mutator blocked weapons");
 AUTOCVAR(g_random_crates_loot_allow_weaponreplace, bool, false, "Allow weaponreplace settings to override the spawned loot");
 
@@ -103,17 +104,27 @@ void crate_dropweapon(entity e, vector org)
 	random_crates_SpawnWeapon(e, RandomSelection_chosen_ent, org);
 }
 
-void crate_drophealth(entity e, vector org)
+void crate_dropregularitem(entity e, vector org, entity itm)
 {
 	Item_SetLoot(e, true);
 	e.reset = SUB_Remove;
 	e.noalign = true;
-	StartItem(e, ((random() > 0.5) ? ITEM_HealthSmall : ITEM_ArmorSmall));
+	StartItem(e, itm);
 	e.gravity = 1;
 	setorigin(e, org);
 	e.velocity = randomvec() * 175 + '0 0 325';
 	e.item_spawnshieldtime = time + 0.7;
 	SUB_SetFade(e, time + autocvar_g_random_crates_loot_lifetime, 1);
+}
+
+void crate_drophealth(entity e, vector org)
+{
+	crate_dropregularitem(e, org, ((random() > 0.5) ? ITEM_HealthSmall : ITEM_ArmorSmall));
+}
+
+void crate_droppowerup(entity e, vector org)
+{
+	crate_dropregularitem(e, org, ((random() > 0.5) ? ITEM_Strength : ITEM_Shield));
 }
 
 void crate_item_touch(entity this, entity toucher)
@@ -186,6 +197,8 @@ void crate_dropitems(vector org)
 			crate_dropweapon(e, org);
 		else if(random() < autocvar_g_random_crates_loot_health_chance)
 			crate_drophealth(e, org);
+		else if(random() < autocvar_g_random_crates_loot_powerup_chance)
+			crate_droppowerup(e, org);
 		else
 			crate_dropitem(e, org);
 	}
