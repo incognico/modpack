@@ -5,7 +5,8 @@ AUTOCVAR(g_random_crates_count, int, 5, "Number of crates to place around the ma
 AUTOCVAR(g_random_crates_tries, int, 20, "Try to place a crate this many times before giving up");
 AUTOCVAR(g_random_crates_delay, float, 20, "Timer between spawning new crates");
 AUTOCVAR(g_random_crates_scale, float, 1.4, "Size of the crates (doesn't affect hitbox)");
-AUTOCVAR(g_random_crates_droptofloor, bool, true, "Drop the crates instantly so they don't appear to fall from the sky");
+AUTOCVAR(g_random_crates_droptofloor, bool, false, "Drop the crates instantly so they don't appear to fall from the sky");
+AUTOCVAR(g_random_crates_droptofloor_maxdepth, float, -1, "Maximum depth for the trace (use negative value for the map size)");
 AUTOCVAR(g_random_crates_loot_count_min, int, 2, "Minimum number of items each crate can drop");
 AUTOCVAR(g_random_crates_loot_count_max, int, 5, "Maximum number of items each crate can drop");
 AUTOCVAR(g_random_crates_loot_lifetime, float, 5, "Lifespan of the spawned items");
@@ -265,6 +266,13 @@ void crate_setup(entity crate)
 	IL_PUSH(g_crates, crate);
 }
 
+void crate_droptofloor(entity e)
+{
+	float max_depth = ((autocvar_g_random_crates_droptofloor_maxdepth < 0) ? max_shot_distance : autocvar_g_random_crates_droptofloor_maxdepth);
+	tracebox(e.origin, e.mins, e.maxs, e.origin - ('0 0 1' * max_depth), MOVE_NORMAL, e);
+	setorigin(e, trace_endpos);
+}
+
 void random_crates_SpawnCrates(int wcount)
 {
 	for(int j = 0; j < wcount; ++j)
@@ -275,6 +283,8 @@ void random_crates_SpawnCrates(int wcount)
 		{
 			if(autocvar_g_random_crates_droptofloor)
 				droptofloor(e);
+			else
+				crate_droptofloor(e);
 			e.angles = '0 0 0';
 			e.gravity = 1;
 			e.spawnfunc_checked = true;
