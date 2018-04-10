@@ -13,6 +13,7 @@ enum
 	CRATE_LOOT_SCUBAGEAR,
 	CRATE_LOOT_SHIELD,
 	CRATE_LOOT_ARSENAL,
+	CRATE_LOOT_CLIP,
 	CRATE_LOOT_LAST
 };
 
@@ -27,6 +28,7 @@ MODEL(CRATE_LOOT_GASMASK, "models/crate_items/gasmask.iqm");
 MODEL(CRATE_LOOT_SCUBAGEAR, "models/crate_items/scubagear.iqm");
 MODEL(CRATE_LOOT_SHIELD, "models/crate_items/shield.iqm");
 MODEL(CRATE_LOOT_ARSENAL, "models/crate_items/arsenal.iqm");
+MODEL(CRATE_LOOT_CLIP, "models/crate_items/clip.iqm");
 Model MDL_CRATE_LOOT(int id) {
     return Models_from(MDL_CRATE_LOOT_POTION.m_id + id);
 }
@@ -45,7 +47,8 @@ string crate_item_getmessage(int id)
 		case CRATE_LOOT_GASMASK: return "You can swim in slime!";
 		case CRATE_LOOT_SCUBAGEAR: return "No more drowning!";
 		case CRATE_LOOT_SHIELD: return "Paladin's shield grants you armor!";
-		case CRATE_LOOT_ARSENAL: return "Ammo is only sometimes used!";
+		case CRATE_LOOT_ARSENAL: return "Double weapons!";
+		case CRATE_LOOT_CLIP: return "Ammo is only sometimes used!";
 	}
 
 	return "You got nothing, sucker!";
@@ -61,7 +64,7 @@ AUTOCVAR(g_random_crates_loot_speed_weaponspeed, float, 1.5, "Weapon action spee
 AUTOCVAR(g_random_crates_loot_speed_rate, float, 0.75, "Weapon attack rate speed (lower is faster)");
 AUTOCVAR(g_random_crates_loot_skull_time, float, 10, "Rough time between pain");
 AUTOCVAR(g_random_crates_loot_skull_damage, float, 20, "Pain");
-AUTOCVAR(g_random_crates_loot_arsenal_chance, float, 0.51, "Chance for ammo to not be consumed");
+AUTOCVAR(g_random_crates_loot_clip_chance, float, 0.51, "Chance for ammo to not be consumed");
 
 
 REGISTER_MUTATOR(crate_items, true); // always enabled!
@@ -87,6 +90,33 @@ MUTATOR_HOOKFUNCTION(crate_items, GetResourceLimit)
 		if(rtype == RESOURCE_HEALTH)
 			M_ARGV(2, float) *= 2; // limit
 	}
+}
+
+bool crate_items_isdual(entity wep)
+{
+	switch(wep)
+	{
+		case WEP_VORTEX:
+		case WEP_RIFLE:
+		case WEP_MORTAR:
+			return true;
+	}
+	return false;
+}
+
+MUTATOR_HOOKFUNCTION(crate_items, ItemTouch)
+{
+	// duplicate of the akimbo function, even allows this outside of akimbo!
+	if(g_nexball || autocvar_g_weaponswitch_debug != 2)
+		return false; // at least try to remain compatible
+	if(MUTATOR_RETURNVALUE == MUT_ITEMTOUCH_RETURN)
+		return false; // already handled, probably didn't pick it up
+
+	entity item = M_ARGV(0, entity);
+	entity player = M_ARGV(1, entity);
+
+	if(Item_IsLoot(item) && item.weapon && (player.weapons & item.itemdef.m_weapon.m_wepset) && crate_items_isdual(item.itemdef.m_weapon) && item.owner != player && (player.rcrates_item & BIT(CRATE_LOOT_ARSENAL)))
+		PS(player).dual_weapons |= item.itemdef.m_weapon.m_wepset; // dual it up!
 }
 
 MUTATOR_HOOKFUNCTION(crate_items, PlayerPreThink)
@@ -163,7 +193,7 @@ MUTATOR_HOOKFUNCTION(crate_items, Damage_Calculate)
 MUTATOR_HOOKFUNCTION(crate_items, W_DecreaseAmmo)
 {
 	entity player = M_ARGV(1, entity);
-	if((player.rcrates_item & BIT(CRATE_LOOT_ARSENAL)) && random() < autocvar_g_random_crates_loot_arsenal_chance)
+	if((player.rcrates_item & BIT(CRATE_LOOT_CLIP)) && random() < autocvar_g_random_crates_loot_clip_chance)
 		return true; // don't consume ammo!
 
 	return false;
