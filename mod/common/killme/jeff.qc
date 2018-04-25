@@ -143,7 +143,7 @@ MUTATOR_HOOKFUNCTION(egoass, PrepareExplosionByDamage)
 	entity proj = M_ARGV(0, entity);
 	entity frag_attacker = M_ARGV(1, entity);
 
-	if(IS_CLIENT(frag_attacker) && proj.realowner != frag_attacker && IS_CLIENT(proj.realowner) && vdist(frag_attacker.origin - proj.origin, <, autocvar_jeff_announce_rejected_distance)) // don't switch back to original owner?!
+	if(IS_CLIENT(frag_attacker) && proj.realowner != frag_attacker && IS_CLIENT(proj.realowner) && vdist(proj.realowner.origin - proj.origin, <, autocvar_jeff_announce_rejected_distance)) // if they're close to the projectile, they probably get hurt
 		jeff_Announcer_Send(proj.realowner, false, ANNCE_JEFF_REJECTED);
 }
 
@@ -272,7 +272,7 @@ MUTATOR_HOOKFUNCTION(egoass, PlayerDies)
 		if( (head.classname == "item_health_mega" && avail)
 		||	(head.classname == "item_armor_large" && avail)
 		||	(head.classname == "item_flag_team" && (CTF_DIFFTEAM(head, targ) || targ.flagcarried))
-		||	(avail && (head.weapon == WEP_VORTEX.m_id || head.weapon == WEP_DEVASTATOR.m_id || (head.weapon == WEP_VAPORIZER.m_id && !g_instagib)))
+		||	(avail && (head.weapon == WEP_VORTEX.m_id || head.weapon == WEP_DEVASTATOR.m_id || (head.weapon == WEP_VAPORIZER.m_id && !autocvar_g_instagib)))
 		)
 		{
 			denied = true;
