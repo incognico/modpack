@@ -2,7 +2,7 @@
 
 #include "akimbo.qc"
 #include "freeze.qc"
-//#include "keeprunning.qc"
+#include "keeprunning.qc"
 #include "piggyback.qc"
 #include "random_vehicles.qc"
 #include "riflearena.qc"
