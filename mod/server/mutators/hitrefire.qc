@@ -12,7 +12,7 @@ MUTATOR_HOOKFUNCTION(hitrefire, Damage_Calculate)
       return;
 
    .entity weaponentity = wep.weaponentity_fld;
-   ATTACK_FINISHED(att, weaponslot(weaponentity)) = time;
+   ATTACK_FINISHED(att, weaponentity) = time;
    //PHYS_INPUT_BUTTON_ATCK(att) = false;
    //weapon_thinkf(att, weaponentity, WFRAME_DONTCHANGE, 0, w_ready);
    weapon_thinkf(att, weaponentity, WFRAME_DONTCHANGE, WEP_CVAR_PRI(vaporizer, animtime), w_ready);
