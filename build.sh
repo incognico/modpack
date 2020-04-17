@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-cd ${0%[\\/]*}
 set -eu
 
 declare base=xonotic
@@ -14,7 +13,7 @@ export PROGS_OUT
 : ${QCC:=$PWD/gmqcc/gmqcc}
 export QCC
 
-export QCCFLAGS_WATERMARK=$(git describe --tags --dirty=*)
+export QCCFLAGS_WATERMARK=$(git describe --tags upstream/master)
 
 relpath() {
     b=; s=$(cd $(readlink -f ${1%%/}); pwd); d=$(cd $2; pwd)
