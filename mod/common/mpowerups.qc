@@ -1,4 +1,4 @@
-//FEATURE: Some classic SMB powerups, including the mini mushroom, super star and life shroom!
+//FEATURE-DISABLED Some classic SMB powerups, including the mini mushroom, super star and life shroom!
 
 const int MIT_STAR = BIT(0);
 const int MIT_MINI = BIT(1);
@@ -28,7 +28,7 @@ SOUND(Star, "items/powerup_star");
 #ifdef SVQC
 .float star_finished;
 AUTOCVAR(g_powerup_star_time, float, 33.616, "");
-void powerup_star_init(entity item)
+void powerup_star_init(Pickup this, entity item)
 {
     if(!item.star_finished)
         item.star_finished = autocvar_g_powerup_star_time;
@@ -62,7 +62,7 @@ SOUND(Mini, "items/powerup_mini");
 #ifdef SVQC
 .float mini_finished;
 AUTOCVAR(g_powerup_mini_time, float, 30, "");
-void powerup_mini_init(entity item)
+void powerup_mini_init(Pickup this, entity item)
 {
     if(!item.mini_finished)
         item.mini_finished = autocvar_g_powerup_mini_time;
@@ -96,7 +96,7 @@ SOUND(Life, "items/powerup_life");
 #ifdef SVQC
 .float life_finished;
 AUTOCVAR(g_powerup_life_time, float, 60, "");
-void powerup_life_init(entity item)
+void powerup_life_init(Pickup this, entity item)
 {
     if(!item.life_finished)
         item.life_finished = autocvar_g_powerup_life_time;
@@ -139,9 +139,6 @@ AUTOCVAR(g_powerup_mini_size, float, 0.2, "Scale of the player when under the in
 
 const vector PL_VIEW_OFS_CONST = '0 0 35';
 const vector PL_CROUCH_VIEW_OFS_CONST = '0 0 20';
-
-const vector PL_CROUCH_MAX_CONST = '16 16 25';
-const vector PL_CROUCH_MIN_CONST = '-16 -16 -24';
 
 .int mitems;
 
@@ -228,9 +225,9 @@ MUTATOR_HOOKFUNCTION(mpowerups, ItemTouch)
 		return MUT_ITEMTOUCH_PICKUP;
 	}
 
-	if(item.health && STAT(LIFE_FINISHED, toucher) > time)
+	if(GetResource(item, RES_HEALTH) && STAT(LIFE_FINISHED, toucher) > time)
 	{
-		bool gave = Item_GiveAmmoTo(item, toucher, RESOURCE_HEALTH, item.max_health * 2);
+		bool gave = Item_GiveAmmoTo(item, toucher, RES_HEALTH, item.max_health * 2);
 		if(!gave)
 			return MUT_ITEMTOUCH_RETURN;
 		return MUT_ITEMTOUCH_PICKUP;
@@ -380,8 +377,8 @@ MUTATOR_HOOKFUNCTION(mpowerups, PlayerPowerups)
 		{
 			float starthp = ((warmup_stage) ? warmup_start_health : start_health);
 
-			if(GetResourceAmount(player, RESOURCE_HEALTH) > 0)
-				SetResourceAmount(player, RESOURCE_HEALTH, starthp * 2);
+			if(GetResource(player, RES_HEALTH) > 0)
+				SetResource(player, RES_HEALTH, starthp * 2);
 
 			player.mitems |= ITEM_Life.m_itemid;
 			Send_Notification(NOTIF_ALL, world, MSG_INFO, INFO_POWERUP_LIFE, player.netname);
@@ -639,7 +636,7 @@ MUTATOR_HOOKFUNCTION(mpowerups, HUD_Draw_overlay)
 		vector tc_10 = '1.5 0 0' - '0.2 0 0' * sin(time * 0.5) + '0 0.5 0' * cos(time * 1.7);
 		//tc_11 = '1 1 0' + '0.6 0 0' * sin(time * 0.6) + '0 0.3 0' * cos(time * 0.1);
 		vector tc_11 = tc_01 + tc_10 - tc_00;
-		R_BeginPolygon("gfx/rainbow.tga", DRAWFLAG_ADDITIVE);
+		R_BeginPolygon("gfx/rainbow.tga", DRAWFLAG_ADDITIVE, true);
 		R_PolygonVertex('0 0 0', tc_00, rgb, a);
 		R_PolygonVertex(autocvar_vid_conwidth * '1 0 0', tc_10, rgb, a);
 		R_PolygonVertex(autocvar_vid_conwidth * '1 0 0' + autocvar_vid_conheight * '0 1 0', tc_11, rgb, a);

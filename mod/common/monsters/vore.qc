@@ -22,7 +22,7 @@ ENDCLASS(Vore)
 REGISTER_MONSTER(VORE, NEW(Vore));
 
 CLASS(VoreSpike, PortoLaunch)
-/* flags     */ ATTRIB(VoreSpike, spawnflags, int, WEP_FLAG_HIDDEN | WEP_FLAG_MUTATORBLOCKED);
+/* flags     */ ATTRIB(VoreSpike, spawnflags, int, WEP_FLAG_SPECIALATTACK);
 /* impulse   */ ATTRIB(VoreSpike, impulse, int, 9);
 /* refname   */ ATTRIB(VoreSpike, netname, string, "vorespike");
 /* wepname   */ ATTRIB(VoreSpike, message, string, "Vore spike");
@@ -42,6 +42,7 @@ METHOD(VoreSpike, wr_think, void(VoreSpike thiswep, entity actor, .entity weapon
         if (!actor.target_range) actor.target_range = autocvar_g_monsters_target_range;
         if(!IS_MONSTER(actor))
         	actor.enemy = Monster_FindTarget(actor);
+        monster_makevectors(actor, actor.enemy);
         W_SetupShot_Dir(actor, weaponentity, v_forward, false, 0, SND_VORE_FIRESPIKE, CH_WEAPON_B, 0, DEATH_MONSTER_MAGE.m_id);
     	if (!IS_PLAYER(actor)) w_shotdir = normalize((actor.enemy.origin + '0 0 10') - actor.origin);
         M_Vore_Attack_Spike(actor, w_shotdir);
@@ -103,7 +104,7 @@ void M_Vore_Attack_Spike_Touch(entity this, entity toucher)
 // copied from W_Seeker_Think
 void M_Vore_Attack_Spike_Think(entity this)
 {
-	if (time > this.ltime || (this.enemy && this.enemy.health <= 0) || this.owner.health <= 0) {
+	if (time > this.ltime || (this.enemy && GetResource(this.enemy, RES_HEALTH) <= 0) || GetResource(this.owner, RES_HEALTH) <= 0) {
 		this.projectiledeathtype |= HITTYPE_SPLASH;
 		M_Vore_Attack_Spike_Explode(this, NULL);
 	}
@@ -157,8 +158,6 @@ void M_Vore_Attack_Spike_Think(entity this)
 
 void M_Vore_Attack_Spike(entity this, vector dir)
 {
-	makevectors(this.angles);
-
 	entity missile = spawn();
 	missile.owner = missile.realowner = this;
 	setthink(missile, M_Vore_Attack_Spike_Think);
@@ -199,7 +198,7 @@ bool M_Vore_Attack(int attack_type, entity actor, entity targ, .entity weaponent
 			}
 
 			if(actor.vore_spike)
-				return true;
+				return 2;
 			else
 				return false;
 		}
@@ -240,7 +239,7 @@ spawnfunc(monster_shalrath) { Monster_Spawn(this, true, MON_VORE.monsterid); }
 		.float speed;
 		METHOD(Vore, mr_setup, bool(Monster thismon, entity actor))
 		{
-			if(!actor.health) actor.health = (autocvar_g_monster_vore_health);
+			if(!GetResource(actor, RES_HEALTH)) SetResourceExplicit(actor, RES_HEALTH, autocvar_g_monster_vore_health);
 			if(!actor.speed) { actor.speed = (autocvar_g_monster_vore_speed_walk); }
 			if(!actor.speed2) { actor.speed2 = (autocvar_g_monster_vore_speed_run); }
 			if(!actor.stopspeed) { actor.stopspeed = (autocvar_g_monster_vore_speed_stop); }

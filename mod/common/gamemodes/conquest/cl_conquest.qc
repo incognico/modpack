@@ -10,11 +10,12 @@
 AUTOCVAR(cl_conquest_capture_ring_size_min, float, 32, "");
 AUTOCVAR(cl_conquest_capture_ring_size_max, float, 128, "");
 AUTOCVAR(cl_conquest_capture_ring_hud, bool, false, "");
-AUTOCVAR(cl_conquest_capture_text_align, int, 0, "");
+AUTOCVAR(cl_conquest_capture_ring_colorhealth, bool, false, "");
 
 .float scale;
 
 .float cq_factor;
+.float cq_rate;
 void conquest_controlpoint_draw2d(entity this)
 {
 	if(this.cq_capdistance > 0)
@@ -22,64 +23,29 @@ void conquest_controlpoint_draw2d(entity this)
 			return;
 
 	string img = "gfx/crosshair_ring.tga";
-	vector psize = draw_getimagesize(img);
 	vector loc = project_3d_to_2d(this.origin + '0 0 128'); // - 0.5 * psize;
-	vector textloc = loc;
-	if(!(loc_z < 0 || loc_x < 0 || loc_y < 0 || loc_x > vid_conwidth || loc_y > vid_conheight) || autocvar_cl_conquest_capture_ring_hud)
+	if(!(loc.z < 0 || loc.x < 0 || loc.y < 0 || loc.x > vid_conwidth || loc.y > vid_conheight) || autocvar_cl_conquest_capture_ring_hud)
 	{
-		loc_z = psize_z = textloc_z = 0;
+		loc.z = 0;
 		float imgsize = autocvar_cl_conquest_capture_ring_size_min;
-		vector textsize;
 		if(autocvar_cl_conquest_capture_ring_hud)
 		{
 			loc = eX * 0.5 * vid_conwidth + eY * 0.6 * vid_conheight;
-			textloc = eY * 0.64 * vid_conheight;
-			textsize = eX * vid_conwidth + eY * 0.025 * vid_conheight;
 			imgsize = 0.1 * vid_conheight;
 		}
 		else
-		{
 			imgsize = max(autocvar_cl_conquest_capture_ring_size_min, (1 - vlen(this.origin - view_origin) / this.cq_capdistance) * autocvar_cl_conquest_capture_ring_size_max);
-			textsize = '4 2 0' * autocvar_cl_conquest_capture_ring_size_min;
-			if(autocvar_cl_conquest_capture_text_align == 1)
-				textloc_x -= textsize_x / 2;
-			else if(autocvar_cl_conquest_capture_text_align == 2)
-				textloc_x -= textsize_x;
-		}
 
-		//drawstring_aspect(eY * 0.64 * vid_conheight, _("Capture progress"), eX * vid_conwidth + eY * 0.025 * vid_conheight, '1 1 1', 1, DRAWFLAG_NORMAL);
-		int player_team = (entcs_GetTeam(player_localnum) + 1);
-		string msg = "";
-		if(this.team == player_team)
-		{
-			switch(this.cq_status)
-			{
-				default:
-				case CP_NEUTRAL: msg = sprintf(_("Capturing %s"), this.netname); break;
-				case CP_CAPTURED: msg = sprintf(_("Defending %s"), this.netname); break;
-			}
-		}
-		else if(spectatee_status)
-			msg = sprintf(_("Observing %s"), this.netname);
-		else if(this.team && this.cq_status == CP_CAPTURED)
-			msg = sprintf(_("Liberating %s"), this.netname);
-
-		if(msg != "")
-		{
-			drawstring_aspect(textloc, msg, textsize, '1 1 1', 1, DRAWFLAG_NORMAL);
-			DrawCircleClippedPic(loc, imgsize, img, this.cq_factor, this.teamradar_color, 1, DRAWFLAG_ADDITIVE);
-		}
+		DrawCircleClippedPic(loc, imgsize, img, this.cq_factor, this.teamradar_color, 1, DRAWFLAG_ADDITIVE);
 	}
 }
-
-.float cq_rate;
 void conquest_controlpoint_predraw(entity this)
 {
 	this.enemy.angles_y += 32 * frametime;
 	float step = this.cq_rate * frametime;
-	if ( this.cq_factor < this.health - step/2 )
+	if ( this.cq_factor < GetResource(this, RES_HEALTH) - step/2 )
 		this.cq_factor += step;
-	else if ( this.cq_factor > this.health + step/2 )
+	else if ( this.cq_factor > GetResource(this, RES_HEALTH) + step/2 )
 		this.cq_factor -= step;
 	setorigin(this.enemy, this.origin + '0 0 1' * (50 + (this.cq_factor * 140)));
 }
@@ -99,13 +65,11 @@ NET_HANDLE(ENT_CLIENT_CONQUEST_CONTROLPOINT, bool is_new)
 
 	if(sf & CQSF_SETUP)
 	{
-		this.origin_x = ReadCoord();
-		this.origin_y = ReadCoord();
-		this.origin_z = ReadCoord();
+		this.origin = ReadVector();
 		setorigin(this, this.origin);
 		this.drawmask = MASK_NORMAL;
 
-		this.angles_y = ReadCoord();
+		this.angles_y = ReadAngle();
 		
 		this.cq_capdistance = ReadLong();
 
@@ -149,9 +113,12 @@ NET_HANDLE(ENT_CLIENT_CONQUEST_CONTROLPOINT, bool is_new)
 	{
 		float newhealth = ReadByte();
 		if(newhealth != 0) { newhealth /= 255; }
-		this.health = newhealth;
-		this.cq_rate = ReadLong() / 100 * 0.2;
-		this.teamradar_color = Team_ColorRGB(this.team - 1) * this.health + '1 1 1' * (1-this.health);
+		SetResourceExplicit(this, RES_HEALTH, newhealth);
+		this.cq_rate = ReadCoord() / 100 * 0.2;
+		if(autocvar_cl_conquest_capture_ring_colorhealth)
+			this.teamradar_color = Team_ColorRGB(this.team - 1) * GetResource(this, RES_HEALTH) + '1 1 1' * (1-GetResource(this, RES_HEALTH));
+		else
+			this.teamradar_color = Team_ColorRGB(this.team - 1);
 	}
 
 	if(sf & CQSF_NAME)

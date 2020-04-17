@@ -96,7 +96,7 @@ void M_Ogre_Attack_MachineGun(entity this)
 
 	.entity weaponentity = weaponentities[0];
 	fireBullet(this, weaponentity, org, dir, autocvar_g_monster_ogre_attack_machinegun_spread, autocvar_g_monster_ogre_attack_machinegun_solidpenetration, autocvar_g_monster_ogre_attack_machinegun_damage,
-			autocvar_g_monster_ogre_attack_machinegun_force, DEATH_MONSTER_OGRE_MACHINEGUN.m_id, 0);
+			autocvar_g_monster_ogre_attack_machinegun_force, DEATH_MONSTER_OGRE_MACHINEGUN.m_id, EFFECT_BULLET);
 
 	Send_Effect(EFFECT_MACHINEGUN_MUZZLEFLASH, org, dir * 1000, 1);
 
@@ -128,15 +128,15 @@ void M_Ogre_Attack_Grenade_Explode_use(entity this, entity actor, entity trigger
 
 void M_Ogre_Attack_Grenade_Damage(entity this, entity inflictor, entity attacker, float damage, int deathtype, .entity weaponentity, vector hitloc, vector force)
 {
-	if (this.health <= 0)
+	if (GetResource(this, RES_HEALTH) <= 0)
 		return;
 
 	if (!W_CheckProjectileDamage(inflictor.realowner, this.realowner, deathtype, -1)) // no exceptions
 		return; // g_projectiles_damage says to halt
 
-	this.health -= damage;
+	TakeResource(this, RES_HEALTH, damage);
 
-	if (this.health <= 0)
+	if (GetResource(this, RES_HEALTH) <= 0)
 		W_PrepareExplosionByDamage(this, attacker, adaptor_think2use);
 }
 
@@ -161,8 +161,6 @@ void M_Ogre_Attack_Grenade(entity this)
 	vector dir = normalize((this.enemy.origin + '0 0 10') - this.origin);
 	vector org = this.origin + v_forward * 14 + '0 0 30' + v_right * -14;
 
-	makevectors(this.angles);
-
 	Send_Effect(EFFECT_GRENADE_MUZZLEFLASH, org, dir * 1000, 1);
 
 	entity gren = spawn ();
@@ -184,7 +182,7 @@ void M_Ogre_Attack_Grenade(entity this)
 	settouch(gren, M_Ogre_Attack_Grenade_Touch);
 
 	gren.takedamage = DAMAGE_YES;
-	gren.health = autocvar_g_monster_ogre_attack_grenade_health;
+	SetResourceExplicit(gren, RES_HEALTH, autocvar_g_monster_ogre_attack_grenade_health);
 	gren.damageforcescale = autocvar_g_monster_ogre_attack_grenade_damageforcescale;
 	gren.event_damage = M_Ogre_Attack_Grenade_Damage;
 	gren.damagedbycontents = true;
@@ -392,7 +390,7 @@ spawnfunc(monster_ogre) { Monster_Spawn(this, true, MON_OGRE.monsterid); }
 		.float speed;
 		METHOD(Ogre, mr_setup, bool(Monster thismon, entity actor))
 		{
-			if(!actor.health) actor.health = (autocvar_g_monster_ogre_health);
+			if(!GetResource(actor, RES_HEALTH)) SetResourceExplicit(actor, RES_HEALTH, autocvar_g_monster_ogre_health);
 			if(!actor.speed) { actor.speed = (autocvar_g_monster_ogre_speed_walk); }
 			if(!actor.speed2) { actor.speed2 = (autocvar_g_monster_ogre_speed_run); }
 			if(!actor.stopspeed) { actor.stopspeed = (autocvar_g_monster_ogre_speed_stop); }

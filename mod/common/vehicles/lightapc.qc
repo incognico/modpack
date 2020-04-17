@@ -105,6 +105,7 @@ AUTOCVAR(g_vehicle_lightapc_cannon_pitchlimit_down, float, 60, "");
 AUTOCVAR(g_vehicle_lightapc_cannon_pitchlimit_up, float, 60, "");
 AUTOCVAR(g_vehicle_lightapc_cannon_turnlimit_in, float, 20, "");
 AUTOCVAR(g_vehicle_lightapc_cannon_turnlimit_out, float, 80, "");
+AUTOCVAR(g_vehicle_lightapc_cannon_turnlimit_obey, bool, false, "");
 
 AUTOCVAR(g_vehicle_lightapc_tiltlimit, float, 90, "");
 AUTOCVAR(g_vehicle_lightapc_springlength, float, 150, "");
@@ -162,7 +163,7 @@ AUTOCVAR(g_vehicle_lightapc_changetype, bool, true, "Allow gunners to change the
 
 vector vehicle_aimturret2(entity _vehic, entity _turretmount, vector _target, entity _turrret, string _tagname, 
 						  float _pichlimit_min, float _pichlimit_max, 
-						  float _rotlimit_min, float _rotlimit_max, float _aimspeed, float dt)
+						  float _rotlimit_min, float _rotlimit_max, float _aimspeed, float dt, bool uselimits)
 {
 	vector vtag = gettaginfo(_turrret, gettagindex(_turrret, _tagname));
 	vector vtmp = vectoangles(normalize(_target - vtag));
@@ -171,8 +172,16 @@ vector vehicle_aimturret2(entity _vehic, entity _turretmount, vector _target, en
 	float ftmp = _aimspeed * frametime; // TODO: use dt?
 	vtmp.y = bound(-ftmp, vtmp.y, ftmp);
 	vtmp.x = bound(-ftmp, vtmp.x, ftmp);
-	_turrret.angles_y = bound(_rotlimit_min, _turrret.angles_y + vtmp.y, _rotlimit_max);    
-	_turrret.angles_x = bound(_pichlimit_min, _turrret.angles_x + vtmp.x, _pichlimit_max);
+	if(uselimits)
+	{
+		_turrret.angles_y = bound(_rotlimit_min, _turrret.angles_y + vtmp.y, _rotlimit_max);
+		_turrret.angles_x = bound(_pichlimit_min, _turrret.angles_x + vtmp.x, _pichlimit_max);
+	}
+	else
+	{
+		_turrret.angles_y = _turrret.angles_y + vtmp.y;
+		_turrret.angles_x = _turrret.angles_x + vtmp.x;
+	}
 	return vtag;
 }
 
@@ -182,7 +191,7 @@ void lightapc_regen(entity this, float dt)
 		vehicles_regen(this, this.dmg_time, vehicle_shield, autocvar_g_vehicle_lightapc_shield, autocvar_g_vehicle_lightapc_shield_regen_pause, autocvar_g_vehicle_lightapc_shield_regen, dt, true);
 
 	if(this.vehicle_flags & VHF_HEALTHREGEN)
-		vehicles_regen(this, this.dmg_time, vehicle_health, autocvar_g_vehicle_lightapc_health, autocvar_g_vehicle_lightapc_health_regen_pause, autocvar_g_vehicle_lightapc_health_regen, dt, false);
+		vehicles_regen_resource(this, this.dmg_time, vehicle_health, autocvar_g_vehicle_lightapc_health, autocvar_g_vehicle_lightapc_health_regen_pause, autocvar_g_vehicle_lightapc_health_regen, dt, false, RES_HEALTH);
 }
 
 bool lightapc_gunner_frame(entity this, float dt)
@@ -263,7 +272,7 @@ bool lightapc_gunner_frame(entity this, float dt)
 
 		vehicle_aimturret2(vehic, turretmount, _ct, gunner, "fire",
 						  autocvar_g_vehicle_lightapc_cannon_pitchlimit_down * -1, autocvar_g_vehicle_lightapc_cannon_pitchlimit_up,
-						  _out * -1,  _in,  autocvar_g_vehicle_lightapc_cannon_turnspeed, dt);
+						  _out * -1,  _in,  autocvar_g_vehicle_lightapc_cannon_turnspeed, dt, autocvar_g_vehicle_lightapc_cannon_turnlimit_obey);
 
 		vector angvec = gettaginfo(gunner, gettagindex(gunner, "tag_camera"));
 		setorigin(player, angvec);
@@ -339,7 +348,7 @@ bool lightapc_gunner_frame(entity this, float dt)
 		vehic.hitboxmf.solid = SOLID_SLIDEBOX;
 		vehic.hitboxmb.solid = SOLID_SLIDEBOX;
 	}	
-	VEHICLE_UPDATE_PLAYER(player, vehic, health, lightapc);
+	VEHICLE_UPDATE_PLAYER_RESOURCE(player, vehic, health, lightapc, RES_HEALTH);
 
 	if(vehic.vehicle_flags & VHF_HASSHIELD)
 		VEHICLE_UPDATE_PLAYER(player, vehic, shield, lightapc);
@@ -466,6 +475,7 @@ void lightapc_gunner_exit(entity this, int _exitflag)
 
 	player.velocity = 0.75 * vehic.velocity + normalize(spot - vehic.origin) * 200;
 	player.velocity_z += 10;
+	player.oldvelocity = player.velocity; // prevent fall damage
 
 	gunner.phase = time + 5;
 	gunner.owner = NULL;
@@ -718,7 +728,7 @@ bool lightapc_pilot_frame(entity this, float dt)
 	if(vehic.gun2.owner)
 		pilot.vehicle_ammo2 = vehic.gun2.owner.vehicle_ammo1;
 
-	VEHICLE_UPDATE_PLAYER(pilot, vehic, health, lightapc);
+	VEHICLE_UPDATE_PLAYER_RESOURCE(pilot, vehic, health, lightapc, RES_HEALTH);
 
 	if(vehic.vehicle_flags & VHF_HASSHIELD)
 		VEHICLE_UPDATE_PLAYER(pilot, vehic, shield, lightapc);
@@ -776,11 +786,12 @@ void lightapc_pilot_exit(entity this, int eject)
 	entity player = this.owner;
 	if(eject)
 	{
-		makevectors(this.angles);
-		vector spot = this.origin + v_forward * 100 + '0 0 64';
+		vector forward, right, up;
+		MAKE_VECTORS(this.angles, forward, right, up);
+		vector spot = this.origin + forward * 100 + '0 0 64';
 		spot = vehicles_findgoodexit(this, player, spot);
 		setorigin(player, spot);
-		player.velocity = (v_up + v_forward * 0.25) * 750;
+		player.velocity = (up + forward * 0.25) * 750;
 		player.oldvelocity = player.velocity;
 	}
 	else
@@ -988,7 +999,7 @@ METHOD(LightAPC, vr_enter, void(LightAPC thisveh, entity instance))
 {
 #ifdef SVQC
 	set_movetype(instance, MOVETYPE_WALK);
-	instance.owner.vehicle_health = (instance.vehicle_health / autocvar_g_vehicle_lightapc_health) * 100;
+	instance.owner.vehicle_health = (GetResource(instance, RES_HEALTH) / autocvar_g_vehicle_lightapc_health) * 100;
 	instance.owner.vehicle_shield = (instance.vehicle_shield / autocvar_g_vehicle_lightapc_shield) * 100;
 
 	if(instance.owner.flagcarried)
@@ -1156,9 +1167,9 @@ METHOD(LightAPC, vr_spawn, void(LightAPC thisveh, entity instance))
 	instance.bouncefactor = autocvar_g_vehicle_lightapc_bouncefactor;
 	instance.bouncestop = autocvar_g_vehicle_lightapc_bouncestop;
 	instance.damageforcescale = 0.02;
-	instance.vehicle_health = autocvar_g_vehicle_lightapc_health;
+	SetResourceExplicit(instance, RES_HEALTH, autocvar_g_vehicle_lightapc_health);
 	instance.vehicle_shield = autocvar_g_vehicle_lightapc_shield;
-	instance.max_health = instance.vehicle_health;
+	instance.max_health = GetResource(instance, RES_HEALTH);
 
 	instance.bomb1.gun1.avelocity_y = 0;
 	instance.bomb1.gun2.avelocity_y = 0;
@@ -1184,7 +1195,7 @@ METHOD(LightAPC, vr_death, void(LightAPC thisveh, entity instance))
 
 /*
 	setSendEntity(instance, func_null); // stop networking this lightapc (for now)
-	instance.health			= 0;
+	SetResourceExplicit(instance, RES_HEALTH, 0);
 	instance.event_damage	= func_null;
 	instance.solid			= SOLID_CORPSE;
 	instance.takedamage		= DAMAGE_NO;
@@ -1231,7 +1242,7 @@ METHOD(LightAPC, vr_death, void(LightAPC thisveh, entity instance))
 	
 	Send_Effect(EFFECT_EXPLOSION_MEDIUM, instance.origin, '0 0 0', 1);
 	
-	instance.health			= 0;
+	SetResourceExplicit(instance, RES_HEALTH, 0);
 	instance.event_damage	= func_null;
 	instance.solid			= SOLID_CORPSE;
 	instance.takedamage		= DAMAGE_NO;
@@ -1298,9 +1309,9 @@ METHOD(LightAPC, vr_setup, void(LightAPC thisveh, entity instance))
 		instance.vehicle_flags |= VHF_HEALTHREGEN;
 
 	instance.respawntime = autocvar_g_vehicle_lightapc_respawntime;
-	instance.vehicle_health = autocvar_g_vehicle_lightapc_health;
+	SetResourceExplicit(instance, RES_HEALTH, autocvar_g_vehicle_lightapc_health);
 	instance.vehicle_shield = autocvar_g_vehicle_lightapc_shield;
-	instance.max_health = instance.vehicle_health;
+	instance.max_health = GetResource(instance, RES_HEALTH);
 #endif
 
 #ifdef CSQC

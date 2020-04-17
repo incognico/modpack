@@ -133,9 +133,10 @@ void RuneCarriedThink(entity this)
 
 	vector ang = vec2(0, rnum * (360 / rcount) + (time % 360) * 45);
 
-	makevectors(ang);
+	vector forward, right, up;
+	MAKE_VECTORS(ang, forward, right, up);
 
-	setorigin(this, v_forward * 32);
+	setorigin(this, forward * 32);
 }
 
 void rune_unmark_spot(entity e)
@@ -205,8 +206,9 @@ bool rune_spawn_somewhere(entity this)
 			Send_Effect(EFFECT_ELECTRO_BALLEXPLODE, oldloc, '0 0 0', 1);
 			Send_Effect(EFFECT_ELECTRO_BALLEXPLODE, this.origin, '0 0 0', 1);
 			// great
-			makevectors(this.angles),
-			this.velocity = v_forward * 250;
+			vector forward, right, up;
+			MAKE_VECTORS(this.angles, forward, right, up);
+			this.velocity = forward * 250;
 			this.angles = '0 0 0';
 			UNSET_ONGROUND(this);
 			return true;
@@ -508,33 +510,24 @@ MUTATOR_HOOKFUNCTION(rune, Damage_Calculate)
 	else if (frag_target.runes & CURSE_VULNER)
 		frag_damage *= autocvar_g_balance_curse_vulner_takedamage;
 		
-	if(IS_PLAYER(frag_target) && IS_PLAYER(frag_attacker) && frag_attacker != frag_target && frag_attacker.health > 2)
+	if(IS_PLAYER(frag_target) && IS_PLAYER(frag_attacker) && frag_attacker != frag_target && GetResource(frag_attacker, RES_HEALTH) > 2)
 	{
 		if (frag_attacker.runes & RUNE_VAMPIRE)
 		{
 			// apply vampire rune
 			if (frag_attacker.runes & CURSE_EMPATHY) // have the curse too
 			{
-				frag_attacker.health = bound(
-											 autocvar_g_balance_curse_empathy_minhealth,
-											 frag_attacker.health + frag_damage * autocvar_g_balance_rune_vampire_combo_absorb,
-											 autocvar_g_balance_rune_vampire_maxhealth);
+				Heal(frag_attacker, frag_attacker, frag_damage * autocvar_g_balance_rune_vampire_combo_absorb, autocvar_g_balance_rune_vampire_maxhealth);
 			}
 			else
 			{
-				frag_attacker.health = bound(
-											 frag_attacker.health,
-											 frag_attacker.health + frag_damage * autocvar_g_balance_rune_vampire_absorb,
-											 autocvar_g_balance_rune_vampire_maxhealth);
+				Heal(frag_attacker, frag_attacker, frag_damage * autocvar_g_balance_rune_vampire_absorb, autocvar_g_balance_rune_vampire_maxhealth);
 			}
 		}
 		else if (frag_attacker.runes & CURSE_EMPATHY)
 		{
 			// apply empathy curse
-			frag_attacker.health = bound(
-										 autocvar_g_balance_curse_empathy_minhealth,
-										 frag_attacker.health + frag_damage * autocvar_g_balance_curse_empathy_takedamage,
-										 frag_attacker.health);
+			TakeResourceWithLimit(frag_attacker, RES_HEALTH, frag_damage * autocvar_g_balance_curse_empathy_takedamage, autocvar_g_balance_curse_empathy_minhealth);
 		}
 	}
 

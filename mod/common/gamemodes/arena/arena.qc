@@ -232,7 +232,7 @@ MUTATOR_HOOKFUNCTION(arena, MakePlayerObserver)
 	}
 	else
 	{
-		player.frags = FRAGS_LMS_LOSER;
+		player.frags = FRAGS_PLAYER_OUT_OF_GAME;
 		Spawnqueue_Insert(player);
 	}
 	return true;
@@ -252,7 +252,7 @@ MUTATOR_HOOKFUNCTION(arena, ClientConnect)
 	entity player = M_ARGV(0, entity);
 
 	TRANSMUTE(Observer, player);
-	Spawnqueue_Insert(player);
+	Spawnqueue_Insert(player); // TODO: check spec time
 	return true;
 }
 

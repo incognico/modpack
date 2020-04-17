@@ -93,8 +93,6 @@ void M_Enforcer_Attack_Plasma(entity this)
 	vector dir = normalize((this.enemy.origin + '0 0 10') - this.origin);
 	vector org = this.origin + v_forward * 14 + '0 0 5' + v_right * -14;
 
-	makevectors(this.angles);
-
 	Send_Effect(EFFECT_ELECTRO_MUZZLEFLASH, org, dir * 1000, 1);
 
 	entity gren = spawn ();
@@ -197,7 +195,7 @@ spawnfunc(monster_enforcer) { Monster_Spawn(this, true, MON_ENFORCER.monsterid);
 		.float speed;
 		METHOD(Enforcer, mr_setup, bool(Monster thismon, entity actor))
 		{
-			if(!actor.health) actor.health = (autocvar_g_monster_enforcer_health);
+			if(!GetResource(actor, RES_HEALTH)) SetResourceExplicit(actor, RES_HEALTH, autocvar_g_monster_enforcer_health);
 			if(!actor.speed) { actor.speed = (autocvar_g_monster_enforcer_speed_walk); }
 			if(!actor.speed2) { actor.speed2 = (autocvar_g_monster_enforcer_speed_run); }
 			if(!actor.stopspeed) { actor.stopspeed = (autocvar_g_monster_enforcer_speed_stop); }

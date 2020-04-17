@@ -307,16 +307,12 @@ NET_HANDLE(ENT_CLIENT_GAI, bool isnew)
 	
 	if(sf & GAIN_VELOCITY)
 	{
-		this.gai_physics_movement_x = ReadCoord();
-		this.gai_physics_movement_y = ReadCoord();
-		this.gai_physics_movement_z = ReadCoord();
+		this.gai_physics_movement = ReadVector();
 	}
 	
 	if(sf & GAIN_ORIGIN)
 	{
-		this.gai_physics_move_origin_x = ReadCoord();
-		this.gai_physics_move_origin_y = ReadCoord();
-		this.gai_physics_move_origin_z = ReadCoord();
+		this.gai_physics_move_origin = ReadVector();
 
 		setorigin(this, this.gai_physics_move_origin);
 		this.gai_physics_lastupdate = time;
@@ -359,16 +355,12 @@ bool gai_write(entity this, entity _to, int _flags)
 	
 	if(_flags & GAIN_VELOCITY)
 	{
-		WriteCoord(MSG_ENTITY, this.gai_physics_movement_x);
-		WriteCoord(MSG_ENTITY, this.gai_physics_movement_y);
-		WriteCoord(MSG_ENTITY, this.gai_physics_movement_z);
+		WriteVector(MSG_ENTITY, this.gai_physics_movement);
 	}
 	
 	if(_flags & GAIN_ORIGIN)
 	{
-		WriteCoord(MSG_ENTITY, this.gai_physics_move_origin_x);
-		WriteCoord(MSG_ENTITY, this.gai_physics_move_origin_y);
-		WriteCoord(MSG_ENTITY, this.gai_physics_move_origin_z);
+		WriteVector(MSG_ENTITY, this.gai_physics_move_origin);
 	}
 	
 	if(_flags & GAIN_ANGLES)
@@ -422,7 +414,7 @@ entity gai_fly_start(vector _where, Gai zom, float _health, bool _csqc)
 	_ai.takedamage       = DAMAGE_AIM;
 	_ai.deadflag		 = DEAD_NO;
 	_ai.event_damage     = gai_generic_damage;
-	_ai.health           = _health;
+	SetResourceExplicit(_ai, RES_HEALTH, _health);
 	_ai.gai_physics_type = GAIP_FLY;
 	_ai.gai_physics      = gai_physics_fly;
 	setthink(_ai, gai_fly_think);
@@ -482,7 +474,7 @@ entity gai_walk_start(vector _where, Gai zom, float _health, bool _csqc)
 	_ai.solid            = SOLID_BBOX;
 	_ai.takedamage       = DAMAGE_AIM;
 	_ai.event_damage     = gai_generic_damage;
-	_ai.health           = _health;
+	SetResourceExplicit(_ai, RES_HEALTH, _health);
 
 	_ai.gai_physics_type = GAIP_WALK;
 	_ai.gai_physics      = gai_physics_walk;

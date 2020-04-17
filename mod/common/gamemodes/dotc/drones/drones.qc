@@ -131,17 +131,11 @@ void te_csqc_dronedie(entity this)
 
 	WriteByte(MSG_BROADCAST, this.dotc_dronetype);
 	
-	WriteCoord(MSG_BROADCAST, this.origin_x);
-	WriteCoord(MSG_BROADCAST, this.origin_y);
-	WriteCoord(MSG_BROADCAST, this.origin_z);
+	WriteVector(MSG_BROADCAST, this.origin);
 
-	WriteCoord(MSG_BROADCAST, this.velocity_x);
-	WriteCoord(MSG_BROADCAST, this.velocity_y);
-	WriteCoord(MSG_BROADCAST, this.velocity_z);
+	WriteVector(MSG_BROADCAST, this.velocity);
 	
-	WriteCoord(MSG_BROADCAST, this.angles_x);	
-	WriteCoord(MSG_BROADCAST, this.angles_y);
-	WriteCoord(MSG_BROADCAST, this.angles_z);
+	WriteVector(MSG_BROADCAST, this.angles);
 }
 
 void dotc_drone_die(entity this, bool silent)
@@ -319,7 +313,9 @@ void dotc_drone_damage(entity this, entity inflictor, entity attacker, float dam
 	if(IS_CLIENT(attacker))
 		this.dmgtime = time + 2;
 
-	if ((this.health -= damage) <= 0)
+	TakeResource(this, RES_HEALTH, damage);
+
+	if (GetResource(this, RES_HEALTH) <= 0)
 	{
 		if(this.dmgtime >= time)
 		{
@@ -449,13 +445,9 @@ bool dotc_drone_send(entity this, entity to, int sf)
 
 	if(sf & DDSF_MOVE)
 	{
-		WriteCoord(MSG_ENTITY, this.origin_x);
-		WriteCoord(MSG_ENTITY, this.origin_y);
-		WriteCoord(MSG_ENTITY, this.origin_z);
+		WriteVector(MSG_ENTITY, this.origin);
 
-		WriteCoord(MSG_ENTITY, this.velocity_x);
-		WriteCoord(MSG_ENTITY, this.velocity_y);
-		WriteCoord(MSG_ENTITY, this.velocity_z);
+		WriteVector(MSG_ENTITY, this.velocity);
 	}
 
 	if(sf & DDSF_TURN)
@@ -656,13 +648,9 @@ NET_HANDLE(ENT_CLIENT_DOTC_DRONE, bool isnew)
 
 	if(sf & DDSF_MOVE)
 	{
-		this.oldorigin_x = ReadCoord();
-		this.oldorigin_y = ReadCoord();
-		this.oldorigin_z = ReadCoord();
+		this.oldorigin = ReadVector();
 
-		this.velocity_x = ReadCoord();
-		this.velocity_y = ReadCoord();
-		this.velocity_z = ReadCoord();
+		this.velocity = ReadVector();
 
 		setorigin(this, this.oldorigin);
 		this.move_time = time;

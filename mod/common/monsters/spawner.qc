@@ -77,7 +77,7 @@ void M_Spawner_TrySpawning(entity this)
 	}
 }
 
-spawnfunc(monster_spawner) { Monster_Spawn(this, true, MON_SPAWNER.monsterid); }
+spawnfunc(monster_mobspawner) { Monster_Spawn(this, true, MON_SPAWNER.monsterid); }
 
 METHOD(Spawner, mr_think, bool(Monster thismon, entity actor))
 {
@@ -119,7 +119,7 @@ METHOD(Spawner, mr_death, bool(Monster thismon, entity actor))
 METHOD(Spawner, mr_setup, bool(Monster thismon, entity actor))
 {
 	if(!actor.spawnmob || actor.spawnmob == "") { actor.spawnmob = autocvar_g_monster_spawner_spawn_default; }
-	if(!actor.health) actor.health = (autocvar_g_monster_spawner_health);
+	if(!GetResource(actor, RES_HEALTH)) SetResourceExplicit(actor, RES_HEALTH, autocvar_g_monster_spawner_health);
 	actor.speed = actor.speed2 = actor.stopspeed = actor.damageforcescale = 0;
 
 	set_movetype(actor, MOVETYPE_NONE);

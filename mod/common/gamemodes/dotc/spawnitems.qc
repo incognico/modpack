@@ -29,18 +29,18 @@ void dotc_ItemSpawn_Give(entity player)
 	});
 
 	if(player.items & ITEM_Jetpack.m_itemid)
-		player.ammo_fuel = max(player.ammo_fuel, g_pickup_fuel_jetpack);
+		SetResource(player, RES_FUEL, max(GetResource(player, RES_FUEL), g_pickup_fuel_jetpack));
 
-	FOREACH(Weapons, it != WEP_Null && (player.weapons & it.m_wepset),
+	FOREACH(Weapons, it != WEP_Null && (STAT(WEAPONS, player) & it.m_wepset),
 	{
 		switch (it.ammo_type)
 		{
-			case RESOURCE_SHELLS:  player.ammo_shells  = max(player.ammo_shells, autocvar_g_pickup_shells_weapon);  break;
-			case RESOURCE_BULLETS: player.ammo_nails   = max(player.ammo_nails, autocvar_g_pickup_nails_weapon);   break;
-			case RESOURCE_ROCKETS: player.ammo_rockets = max(player.ammo_rockets, autocvar_g_pickup_rockets_weapon); break;
-			case RESOURCE_CELLS:   player.ammo_cells   = max(player.ammo_cells, autocvar_g_pickup_cells_weapon);   break;
-			case RESOURCE_PLASMA:  player.ammo_plasma  = max(player.ammo_plasma, autocvar_g_pickup_plasma_weapon);  break;
-			case RESOURCE_FUEL:    player.ammo_fuel    = max(player.ammo_fuel, autocvar_g_pickup_fuel_weapon);    break;
+			case RES_SHELLS:  SetResource(player, RES_SHELLS, max(GetResource(player, RES_SHELLS), autocvar_g_pickup_shells_weapon)); break;
+			case RES_BULLETS: SetResource(player, RES_BULLETS, max(GetResource(player, RES_BULLETS), autocvar_g_pickup_nails_weapon)); break;
+			case RES_ROCKETS: SetResource(player, RES_ROCKETS, max(GetResource(player, RES_ROCKETS), autocvar_g_pickup_rockets_weapon)); break;
+			case RES_CELLS:   SetResource(player, RES_CELLS, max(GetResource(player, RES_CELLS), autocvar_g_pickup_cells_weapon)); break;
+			case RES_PLASMA:  SetResource(player, RES_PLASMA, max(GetResource(player, RES_PLASMA), autocvar_g_pickup_plasma_weapon)); break;
+			case RES_FUEL:    SetResource(player, RES_FUEL, max(GetResource(player, RES_FUEL), autocvar_g_pickup_fuel_weapon)); break;
 		}
 	});
 }
@@ -104,27 +104,27 @@ void dotc_ItemSupply_TriggerTouch(entity this, entity toucher)
 
 	if (warmup_stage)
 	{
-		toucher.ammo_shells = warmup_start_ammo_shells;
-		toucher.ammo_nails = warmup_start_ammo_nails;
-		toucher.ammo_rockets = warmup_start_ammo_rockets;
-		toucher.ammo_cells = warmup_start_ammo_cells;
-		toucher.ammo_plasma = warmup_start_ammo_plasma;
-		toucher.ammo_fuel = warmup_start_ammo_fuel;
-		toucher.health = warmup_start_health;
-		toucher.armorvalue = warmup_start_armorvalue;
-		toucher.weapons = WARMUP_START_WEAPONS;
+		SetResource(this, RES_SHELLS, warmup_start_ammo_shells);
+		SetResource(this, RES_BULLETS, warmup_start_ammo_nails);
+		SetResource(this, RES_ROCKETS, warmup_start_ammo_rockets);
+		SetResource(this, RES_CELLS, warmup_start_ammo_cells);
+		SetResource(this, RES_PLASMA, warmup_start_ammo_plasma);
+		SetResource(this, RES_FUEL, warmup_start_ammo_fuel);
+		SetResource(this, RES_HEALTH, warmup_start_health);
+		SetResource(this, RES_ARMOR, warmup_start_armorvalue);
+		STAT(WEAPONS, toucher) = WARMUP_START_WEAPONS;
 	}
 	else
 	{
-		toucher.ammo_shells = start_ammo_shells;
-		toucher.ammo_nails = start_ammo_nails;
-		toucher.ammo_rockets = start_ammo_rockets;
-		toucher.ammo_cells = start_ammo_cells;
-		toucher.ammo_plasma = start_ammo_plasma;
-		toucher.ammo_fuel = start_ammo_fuel;
-		toucher.health = start_health;
-		toucher.armorvalue = start_armorvalue;
-		toucher.weapons = start_weapons;
+		SetResource(this, RES_SHELLS, start_ammo_shells);
+		SetResource(this, RES_BULLETS, start_ammo_nails);
+		SetResource(this, RES_ROCKETS, start_ammo_rockets);
+		SetResource(this, RES_CELLS, start_ammo_cells);
+		SetResource(this, RES_PLASMA, start_ammo_plasma);
+		SetResource(this, RES_FUEL, start_ammo_fuel);
+		SetResource(this, RES_HEALTH, start_health);
+		SetResource(this, RES_ARMOR, start_armorvalue);
+		STAT(WEAPONS, toucher) = start_weapons;
 	}
 
 	dotc_ItemSpawn_Give(toucher);
@@ -158,7 +158,7 @@ void dotc_ItemSupply_Init(entity this, int teamnumber)
 	this.angles_x = -this.angles.x; // ported from misc_gamemodel
 	set_movetype(this, MOVETYPE_NONE);
 	setmodel(this, MDL_DOTC_ITEMSUPPLY);
-	SetBrushEntityModelNoLOD(this);
+	SetBrushEntityModel(this, false);
 
 	setthink(this, dotc_ItemSupply_Think);
 	this.nextthink = time + 0.5;
