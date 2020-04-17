@@ -2,6 +2,7 @@
 
 #include "akimbo.qc"
 #include "freeze.qc"
+#include "hitrefire.qc"
 #include "itemplacer.qc"
 #include "keeprunning.qc"
 #include "piggyback.qc"
@@ -11,4 +12,5 @@
 //#include "skycycle.qc"
 #include "spawn_invisible.qc"
 #include "spawn_unique.qc"
+#include "twistagib.qc"
 #include "zombie_apocalypse.qc"

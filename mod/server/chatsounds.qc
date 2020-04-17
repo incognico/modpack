@@ -1,3 +1,5 @@
+// TODO: Animate sprite
+
 void snd_precache(string inpattern);
 string snd_exists(string inpattern);
 void UpdateFlower(entity player);
