@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd ${0%[\\/]*}
+cd ~/.xonotic/smb/modpack
 set -eu
 
 git pull --tags
@@ -11,7 +11,7 @@ declare qccRepo='https://gitlab.com/xonotic/gmqcc.git'
 declare qccBranch='master'
 
 if [ -z "${CI-}" ]; then
-    wget -P .cache -c https://github.com/MarioSMB/csprogs/raw/master/csprogs-$(git describe --tags --dirty=*).pk3
+    wget -P .cache -c https://github.com/MarioSMB/csprogs/raw/master/csprogs-$(git describe --tags upstream/master).pk3
 fi
 
 if [ ! -d "$qccDir" ]; then
