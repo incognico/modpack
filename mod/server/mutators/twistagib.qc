@@ -89,13 +89,13 @@ MUTATOR_HOOKFUNCTION(twistagib, PlayerDies)
       PutClientInServer(frag_attacker);
    }
 
-	for(int slot = 0; slot < MAX_WEAPONSLOTS; ++slot)
-	{
-		.entity went = weaponentities[slot];
-		Weapon wep = frag_target.(went).m_weapon;
-		wep.wr_playerdeath(wep, frag_target, went);
+   for(int slot = 0; slot < MAX_WEAPONSLOTS; ++slot)
+   {
+      .entity went = weaponentities[slot];
+      Weapon wep = frag_target.(went).m_weapon;
+      wep.wr_playerdeath(wep, frag_target, went);
       SpawnThrownWeapon(frag_target, frag_target.origin + (frag_target.mins + frag_target.maxs) * 0.5, frag_target.(went).m_weapon, went);
-	}
+   }
 
    updateRIP(frag_target);
    SetResourceExplicit(frag_target, RES_HEALTH, start_health);
