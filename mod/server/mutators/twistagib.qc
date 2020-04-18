@@ -6,7 +6,7 @@ void updateRIP(entity player);
 void RIPThink(entity this);
 
 string ripspr = "models/twlz/dead.spr";
-float ripsprlife = 2.2;
+float ripsprlife = 2;
 
 .entity ripentity;
 
@@ -39,9 +39,13 @@ MUTATOR_HOOKFUNCTION(twistagib, PlayerDies)
 
    frag_attacker.respawn_flags |= RESPAWN_SILENT;
    PutClientInServer(frag_attacker);
+   
+   // ???
+   //if(frag_attacker.frags >= 1) SetResource(frag_attacker, RES_CELLS, start_ammo_cells/2);
 
    updateRIP(frag_target);
    SetResourceExplicit(frag_target, RES_HEALTH, start_health);
+   SetResource(frag_target, RES_CELLS, start_ammo_cells);
 
    //if(autocvar_g_nades)
    //{
