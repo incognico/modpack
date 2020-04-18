@@ -148,10 +148,10 @@ void updateRIP(entity player)
 
 void RIPThink(entity this)
 {
-        if(this.owner)
-            this.owner.ripentity = NULL;
+   if(this.owner)
+      this.owner.ripentity = NULL;
 
-        delete(this);
+   delete(this);
 }
 
 MUTATOR_HOOKFUNCTION(twistagib, BuildMutatorsString)
