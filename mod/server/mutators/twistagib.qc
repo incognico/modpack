@@ -1,19 +1,22 @@
 // TODO: Animate sprite
+// TODO: Fade out sprite
 // TODO: Maybe do something with nades
 
-string rip = "models/twlz/dead.spr";
 void updateRIP(entity player);
 void RIPThink(entity this);
+
+string ripspr = "models/twlz/dead.spr";
+float ripsprlife = 2.2;
 
 .entity ripentity;
 
 AUTOCVAR(g_twistagib, bool, false, "InstaGib with a twist");
 
-REGISTER_MUTATOR(twistagib, autocvar_g_twistagib && autocvar_g_instagib)
+REGISTER_MUTATOR(twistagib, autocvar_g_twistagib && autocvar_g_instagib && !teamplay)
 {
    MUTATOR_ONADD
    {
-      precache_model(rip);
+      precache_model(ripspr);
    }
 }
 
@@ -34,13 +37,11 @@ MUTATOR_HOOKFUNCTION(twistagib, PlayerDies)
    RemoveGrapplingHooks(frag_attacker);
    RemoveGrapplingHooks(frag_target);
 
-   frag_attacker.respawn_flags = (RESPAWN_FORCE | RESPAWN_SILENT);
+   frag_attacker.respawn_flags |= RESPAWN_SILENT;
    PutClientInServer(frag_attacker);
 
-   calculate_player_respawn_time(frag_target);
-   SetResourceExplicit(frag_target, RES_HEALTH, start_health);
-
    updateRIP(frag_target);
+   SetResourceExplicit(frag_target, RES_HEALTH, start_health);
 
    //if(autocvar_g_nades)
    //{
@@ -67,25 +68,22 @@ MUTATOR_HOOKFUNCTION(twistagib, BuildMutatorsPrettyString)
    M_ARGV(0, string) = strcat(M_ARGV(0, string), ", TwistaGib");
 }
 
-MUTATOR_HOOKFUNCTION(twistagib, SetModname)
-{
-   M_ARGV(0, string) = "TwistaGib";
-   return true;
-}
+//MUTATOR_HOOKFUNCTION(twistagib, SetModname)
+//{
+//   M_ARGV(0, string) = "TwistaGib";
+//   return true;
+//}
 
 void updateRIP(entity player)
 {
-    if (!player.ripentity)
-    {
-        player.ripentity = new(ripentity);
-        player.ripentity.owner = player;
-        setthink(player.ripentity, RIPThink);
-        player.ripentity.nextthink = time + 2;
-        _setmodel(player.ripentity, rip);
-        setorigin(player.ripentity, '0 0 0' + player.maxs_z * '0 0 1');
-        player.ripentity.mdl = player.ripentity.model;
-        player.ripentity.effects = EF_LOWPRECISION;
-    }
+   player.ripentity = new(ripentity);
+   player.ripentity.owner = player;
+   setthink(player.ripentity, RIPThink);
+   player.ripentity.nextthink = time + ripsprlife;
+   _setmodel(player.ripentity, ripspr);
+   setorigin(player.ripentity, player.origin);
+   player.ripentity.mdl = player.ripentity.model;
+   player.ripentity.effects = EF_LOWPRECISION;
 }
 
 void RIPThink(entity this)
