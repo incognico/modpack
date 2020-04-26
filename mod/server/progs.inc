@@ -13,8 +13,9 @@
 	//#include "itemplacer.qc"
 	#include "items.qc"
 	#include "headshots.qc"
-	#include "monsters.qc"
+	//#include "monsters.qc"
 	#include "mute.qc"
+	#include "noplayerfb.qc"
 	#include "player_size.qc"
 	//#include "prediction.qc"
 	#include "settemp.qc"
@@ -22,7 +23,7 @@
 	#include "stats.qc"
 	#include "tp.qc"
 	#include "voteban.qc"
-	#include "weapons.qc"
+	//#include "weapons.qc"
 
 	#include "mutators/all.inc"
 #endif

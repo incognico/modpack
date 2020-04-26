@@ -5,7 +5,7 @@
 
 	#include "clientbeams.qc"
 	#include "compat.qc"
-	#include "custom_playermodels.qc"
+	//#include "custom_playermodels.qc"
 	#include "cvars.qc"
 	#include "demo.qc"
 	#include "polytrails.qc"
