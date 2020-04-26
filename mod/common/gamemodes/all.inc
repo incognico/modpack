@@ -3,5 +3,5 @@
 //#include "dotc/module.inc"
 #include "jailbreak/module.inc"
 #include "runematch/module.inc"
-#include "snafu/module.inc"
+//#include "snafu/module.inc"
 #include "vip/module.inc"
