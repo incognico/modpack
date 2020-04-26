@@ -11,5 +11,5 @@ MUTATOR_HOOKFUNCTION(mutator_mod, BuildMutatorsString) {
 
 MUTATOR_HOOKFUNCTION(mutator_mod, BuildGameplayTipsString, CBC_ORDER_LAST)
 {
-    M_ARGV(0, string) = strcat(M_ARGV(0, string), "\n\n ^7Running a custom SMB mod pack\n^3https://github.com/incognico/modpack\n^3(https://github.com/MarioSMB/modpack)\n");
+    M_ARGV(0, string) = strcat(M_ARGV(0, string), "\n\n ^7Running a custom SMB mod pack\n^3https://github.com/incognico/modpack\n");
 }
