@@ -7,9 +7,8 @@ AUTOCVAR(g_maplist_allow_personal, bool, false, "List maps the player hasn't bea
 
 STATIC_INIT(mod_cmds)
 {
-	//localcmd("\nalias ircmsg \"sv_cmd ircmsg ${* ?}\"\n"); // NOTE: use the direct command in irc bots, this alias allows users to run any command unsafely
-	localcmd("\nalias _ircmessage \"ircmsg ${* ?}\"\n");
-	localcmd("\nalias chlevel \"sv_cmd chlevel ${* ?}\"\n");
+	localcmd("\nalias ch \"sv_cmd chlevel ${* ?}\"\n");
+	localcmd("\nalias rr \"sv_cmd restart_fix ${* ?}\"\n");
 	localcmd("\nalias stufftoall \"sv_cmd stufftoall ${* ?}\"\n");
 	localcmd("\nalias dumpmodcvars \"sv_cmd dumpmodcvars ${* ?}\"\n");
 	localcmd("\nalias gotorandom \"sv_cmd gotorandom ${* ?}\"\n");
@@ -215,8 +214,16 @@ MUTATOR_HOOKFUNCTION(mutator_mod, SV_ParseServerCommand)
 	if(cmd_name == "chlevel")
 	{
 		string m = MapInfo_FixName(argv(1));
+		LOG_INFO(":stupidworkaround:", m);
 		localcmd(strcat("\nchangelevel ", m, "\n"));
 		LOG_INFO("Switching to ", m);
+		return true;
+	}
+
+	if(cmd_name == "restart_fix")
+	{
+		LOG_INFO(":stupidworkaround:");
+		localcmd("\nrestart\n");
 		return true;
 	}
 
@@ -232,6 +239,7 @@ MUTATOR_HOOKFUNCTION(mutator_mod, SV_ParseServerCommand)
 		{
 			// TODO: we can't actually rely on this...
 			string foundmap = _MapInfo_GlobItem(MapInfo_FilterList_Lookup(floor(random() * (MapInfo_count + 1))));
+			LOG_INFO(":stupidworkaround:", m);
 			localcmd(strcat("\nchangelevel ", foundmap, "\n"));
 			LOG_INFO("Switching to ", foundmap);
 			return true;
@@ -246,6 +254,7 @@ MUTATOR_HOOKFUNCTION(mutator_mod, SV_ParseServerCommand)
 		}
 
 		string themap = argv(pos);
+		LOG_INFO(":stupidworkaround:", themap);
 		localcmd(strcat("\nchangelevel ", themap, "\n"));
 		LOG_INFO("Switching to ", themap);
 		return true;
