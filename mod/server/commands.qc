@@ -239,7 +239,7 @@ MUTATOR_HOOKFUNCTION(mutator_mod, SV_ParseServerCommand)
 		{
 			// TODO: we can't actually rely on this...
 			string foundmap = _MapInfo_GlobItem(MapInfo_FilterList_Lookup(floor(random() * (MapInfo_count + 1))));
-			LOG_INFO(":stupidworkaround:", m);
+			LOG_INFO(":stupidworkaround:", foundmap);
 			localcmd(strcat("\nchangelevel ", foundmap, "\n"));
 			LOG_INFO("Switching to ", foundmap);
 			return true;
