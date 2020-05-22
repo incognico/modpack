@@ -19,7 +19,7 @@
 #include "notifications.qh"
 //#include "player_crush.qc"
 #include "polytrails.qh"
-//#include "radio/module.inc"
+#include "radio/module.inc"
 #include "special.qc"
 #include "team_collisions.qc"
 //#include "vehicles/all.inc"
