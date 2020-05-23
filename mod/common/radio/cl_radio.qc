@@ -147,6 +147,12 @@ MUTATOR_HOOKFUNCTION(radio, CSQC_ConsoleCommand)
 
 		cvar_set("cl_radio", onoff);
 		localcmd("\ncmd radio ", cvar_string("cl_radio"), "\n");
+
+      if (onoff == "0")
+      {
+         localcmd("\ncd stop\n");
+      }
+
 		return true;
 	}
 }
