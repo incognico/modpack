@@ -21,7 +21,9 @@ zip -9 "${ARCHIVE}" ${PROG}-${VERSION}.{dat,lno} "${PKGINFO}" && mv "${ARCHIVE}"
 
 rm ${PROG}-${VERSION}.{dat,lno} "${PKGINFO}"
 
-cp $mod/.cache/csprogs-$VERSION.pk3 $xon/.
+rm $xon/${PROG}-*.pk3
+
+cp $mod/.cache/${PROG}-$VERSION.pk3 $xon/.
 
 for i in $xon/*.pk3
 do
