@@ -8,7 +8,7 @@
 //#include "piggyback.qc"
 //#include "random_vehicles.qc"
 //#include "riflearena.qc"
-#include "shotgunarena.qc"
+//#include "shotgunarena.qc"
 //#include "skycycle.qc"
 //#include "spawn_invisible.qc"
 #include "spawn_unique.qc"
