@@ -7,6 +7,7 @@ AUTOCVAR(g_maplist_allow_personal, bool, false, "List maps the player hasn't bea
 
 STATIC_INIT(mod_cmds)
 {
+   localcmd("\nalias chlevel \"sv_cmd chlevel ${* ?}\"\n");
 	localcmd("\nalias stufftoall \"sv_cmd stufftoall ${* ?}\"\n");
 	localcmd("\nalias dumpmodcvars \"sv_cmd dumpmodcvars ${* ?}\"\n");
 	localcmd("\nalias gotorandom \"sv_cmd gotorandom ${* ?}\"\n");
