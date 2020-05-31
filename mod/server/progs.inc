@@ -20,7 +20,7 @@
 	//#include "prediction.qc"
 	#include "settemp.qc"
 	#include "spawnreplace.qc"
-	#include "stats.qc"
+	//#include "stats.qc"
 	#include "tp.qc"
 	#include "voteban.qc"
 	//#include "weapons.qc"
