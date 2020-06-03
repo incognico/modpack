@@ -1,7 +1,6 @@
+#if 0
 #include "goomba.qc"
 #include "koopa.qc"
-
-#if 0
 #include "vore.qc"
 #include "scrag.qc"
 #include "soldier.qc"
