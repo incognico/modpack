@@ -24,7 +24,7 @@ REGISTER_MUTATOR(twistagib, autocvar_g_twistagib && autocvar_g_instagib && !team
    }
 }
 
-MUTATOR_HOOKFUNCTION(twistagib, PlayerDies)
+MUTATOR_HOOKFUNCTION(twistagib, PlayerDies, CBC_ORDER_LAST)
 {
    entity frag_attacker = M_ARGV(1, entity);
    entity frag_target   = M_ARGV(2, entity);
