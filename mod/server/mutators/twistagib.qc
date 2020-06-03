@@ -164,11 +164,11 @@ MUTATOR_HOOKFUNCTION(twistagib, BuildMutatorsPrettyString)
    M_ARGV(0, string) = strcat(M_ARGV(0, string), ", TwistaGib");
 }
 
-//MUTATOR_HOOKFUNCTION(twistagib, SetModname)
-//{
-//   M_ARGV(0, string) = "TwistaGib";
-//   return true;
-//}
+MUTATOR_HOOKFUNCTION(twistagib, SetModname)
+{
+   M_ARGV(0, string) = "TwistaGib";
+   return true;
+}
 
 // 1511 //DP_SV_EFFECT
 // 1512 //idea: LordHavoc
