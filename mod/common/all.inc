@@ -17,7 +17,7 @@
 #include "nocross.qc"
 #include "mutators/all.inc"
 #include "notifications.qh"
-//#include "player_crush.qc"
+#include "player_crush.qc"
 #include "polytrails.qh"
 #include "radio/module.inc"
 #include "special.qc"
