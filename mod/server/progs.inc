@@ -12,12 +12,15 @@
 	#include "ignore.qc"
 	#include "itemplacer.qc"
 	#include "items.qc"
+<<<<<<< HEAD
 	#include "headshots.qc"
 	//#include "monsters.qc"
+=======
+	#include "monsters.qc"
+>>>>>>> upstream/master
 	#include "mute.qc"
 	#include "noplayerfb.qc"
 	#include "player_size.qc"
-	//#include "prediction.qc"
 	#include "settemp.qc"
 	#include "spawnreplace.qc"
 	//#include "stats.qc"

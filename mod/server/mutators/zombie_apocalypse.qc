@@ -1,7 +1,7 @@
 //FEATURE: Zombie Apocalypse mutator, which spawns random monsters around the map constantly
 
 float za_spawn_delay;
-AUTOCVAR(g_za, bool, false, _("Enable zombie apocalypse mutator"));
+AUTOCVAR(g_za, bool, false, "Enable zombie apocalypse mutator");
 
 REGISTER_MUTATOR(za, autocvar_g_za && autocvar_g_monsters && !g_nexball && !g_invasion && !g_cts && !g_race)
 {
@@ -12,7 +12,7 @@ REGISTER_MUTATOR(za, autocvar_g_za && autocvar_g_monsters && !g_nexball && !g_in
 }
 
 AUTOCVAR(g_za_max_monsters, int, 20, "");
-AUTOCVAR(g_za_spawnmonster, string, "zombie", _("Spawn this type of monster, can be random or any of the mobs in 'spawnmob list'"));
+AUTOCVAR(g_za_spawnmonster, string, "zombie", "Spawn this type of monster, can be random or any of the mobs in 'spawnmob list'");
 AUTOCVAR(g_za_spawn_delay, float, 5, "");
 
 void za_SpawnMonster()
@@ -24,7 +24,7 @@ void za_SpawnMonster()
 	if(MoveToRandomMapLocation(e, DPCONTENTS_SOLID | DPCONTENTS_CORPSE | DPCONTENTS_PLAYERCLIP, DPCONTENTS_SLIME | DPCONTENTS_LAVA | DPCONTENTS_SKY | DPCONTENTS_BODY | DPCONTENTS_DONOTENTER, Q3SURFACEFLAG_SKY, 10, 1024, 256))
 	{
 		e.angles = '0 0 0';
-		spawnmonster(e, autocvar_g_za_spawnmonster, 0, NULL, NULL, e.origin, false, false, 2);
+		spawnmonster(e, autocvar_g_za_spawnmonster, MON_Null, NULL, NULL, e.origin, false, false, 2);
 	}
 }
 

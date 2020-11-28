@@ -1,5 +1,5 @@
-AUTOCVAR(g_itemplacer, bool, false, _("Item placement tool to spawn in some entities"));
-AUTOCVAR(g_itemplacer_spawnitems, bool, false, _("Also attempt to spawn in the items as they're placed"));
+AUTOCVAR(g_itemplacer, bool, false, "Item placement tool to spawn in some entities");
+AUTOCVAR(g_itemplacer_spawnitems, bool, false, "Also attempt to spawn in the items as they're placed");
 
 .bool canplace;
 bool map_has_entfile;
@@ -200,7 +200,7 @@ MUTATOR_HOOKFUNCTION(itemplacer, SV_ParseServerCommand)
 		{
 			player.canplace = true;
 			print_to(player, "You're now allowed to place items!");
-			LOG_INFO(playername(player, false), " has been granted item placement abilities.");
+			LOG_INFO(playername(player.netname, player.team, false), " has been granted item placement abilities.");
 		}
 		else
 			LOG_INFO("Invalid player.");
@@ -215,7 +215,7 @@ MUTATOR_HOOKFUNCTION(itemplacer, SV_ParseServerCommand)
 		{
 			player.canplace = false;
 			print_to(player, "You're no longer allowed to place items.");
-			LOG_INFO(playername(player, false), " has been revoked of item placement abilities.");
+			LOG_INFO(playername(player.netname, player.team, false), " has been revoked of item placement abilities.");
 		}
 		else
 			LOG_INFO("Invalid player.");

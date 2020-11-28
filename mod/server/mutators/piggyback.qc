@@ -1,9 +1,9 @@
 //FEATURE: Piggy-backing lets you ride your teammates to victory
 
-AUTOCVAR(g_piggyback, bool, false, _("Enable piggyback mutator (riding teammates)"));
+AUTOCVAR(g_piggyback, bool, false, "Enable piggyback mutator (riding teammates)");
 REGISTER_MUTATOR(piggyback, autocvar_g_piggyback);
 
-AUTOCVAR(g_piggyback_ride_enemies, bool, false, _("Allow riding enemies"));
+AUTOCVAR(g_piggyback_ride_enemies, bool, false, "Allow riding enemies");
 
 .bool cvar_cl_nocarry;
 .bool cvar_cl_noride;
@@ -207,7 +207,7 @@ MUTATOR_HOOKFUNCTION(piggyback, PlayerUseKey)
 		head = WarpZone_FindRadius(player.origin, autocvar_g_vehicles_enter_radius, true);
 		while(head)
 		{
-			if(IS_PLAYER(head) || (IS_MONSTER(head) && ((REGISTRY_GET(Monsters, head.monsterid)).spawnflags & MON_FLAG_RIDE)))
+			if(IS_PLAYER(head) || (IS_MONSTER(head) && (head.monsterdef.spawnflags & MON_FLAG_RIDE)))
 			if(SAME_TEAM(head, player) || autocvar_g_piggyback_ride_enemies || (IS_MONSTER(head) && head.realowner == player))
 			if(head != player)
 			if(!head.cvar_cl_nocarry)
@@ -372,12 +372,12 @@ MUTATOR_HOOKFUNCTION(piggyback, FixPlayermodel)
 	|| STAT(FROZEN, player)
 	) { do_crouch = false; }
 
-	if(!do_crouch && player.crouch)
+	if(!do_crouch && IS_DUCKED(player))
 	{
 		tracebox(player.origin, STAT(PL_MIN, player), STAT(PL_MAX, player), player.origin, false, player);
 		if (!trace_startsolid || player.pbhost)
 		{
-			player.crouch = false;
+			UNSET_DUCKED(player);
 			player.view_ofs = STAT(PL_VIEW_OFS, player);
 			setsize (player, STAT(PL_MIN, player), STAT(PL_MAX, player));
 		}
