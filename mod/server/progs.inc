@@ -10,7 +10,7 @@
 	#include "damage.qc"
 	#include "demo.qc"
 	#include "ignore.qc"
-	#include "itemplacer.qc"
+	//#include "itemplacer.qc"
 	#include "items.qc"
 	//#include "monsters.qc"
 	#include "mute.qc"
